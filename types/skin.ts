@@ -90,3 +90,38 @@ export interface AnalyseRequest {
   inputType: 'link' | 'text' | 'image'
   content: string
 }
+
+export interface UserProfile {
+  id: string
+  email: string | null
+  skinType: SkinType | null
+  concerns: SkinConcern[]
+  goals: SkinGoal[]
+  climate: ClimateZone | null
+  ageRange: string | null
+  budget: 'low' | 'medium' | 'high' | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface QuizHistoryEntry {
+  id: string
+  userId: string
+  profile: SkinProfile
+  result: AnalysisResult
+  takenAt: string
+}
+
+export interface RoutineLog {
+  id: string
+  userId: string
+  date: string
+  morningDone: boolean
+  nightDone: boolean
+}
+
+export interface AuthUser {
+  id: string
+  email: string | null
+  provider: 'google' | 'email'
+}
