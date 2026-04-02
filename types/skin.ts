@@ -65,3 +65,28 @@ export interface AnalysisResult {
   morningRoutine: string[]
   nightRoutine: string[]
 }
+
+export interface IngredientAnalysis {
+  name: string
+  effect: 'beneficial' | 'harmful' | 'neutral'
+  reason: string
+}
+
+export interface ProductAnalysis {
+  productName: string
+  brand: string
+  overallScore: number
+  verdict: 'yes' | 'no' | 'caution'
+  verdictReason: string
+  beneficialIngredients: IngredientAnalysis[]
+  harmfulIngredients: IngredientAnalysis[]
+  neutralIngredients: IngredientAnalysis[]
+  safeToUse: boolean
+  alternativeSuggestion?: string
+}
+
+export interface AnalyseRequest {
+  sessionId: string
+  inputType: 'link' | 'text' | 'image'
+  content: string
+}
