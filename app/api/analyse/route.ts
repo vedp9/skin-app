@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 import { analyseProduct } from '@/lib/ai'
-import { getSkinProfile } from '@/lib/supabase'
-import { AnalyseRequest } from '@/types/skin'
+import { getSkinProfile, getUserProfile } from '@/lib/supabase'
+import { AnalyseRequest, SkinProfile } from '@/types/skin'
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,16 +30,46 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const saved = await getSkinProfile(sessionId)
+    let profile: SkinProfile | null = null
 
-    if (!saved) {
-      return NextResponse.json(
-        { error: 'No skin profile found. Please complete the quiz first.' },
-        { status: 404 }
-      )
+    // Try logged in user profile first
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+
+    const authHeader = req.headers.get('authorization')
+    if (authHeader) {
+      const token = authHeader.replace('Bearer ', '')
+      const { data: { user } } = await supabase.auth.getUser(token)
+
+      if (user) {
+        const userProfile = await getUserProfile(user.id)
+        if (userProfile && userProfile.skinType) {
+          profile = {
+            skinType: userProfile.skinType!,
+            concerns: userProfile.concerns as SkinProfile['concerns'],
+            goals: userProfile.goals as SkinProfile['goals'],
+            climate: userProfile.climate!,
+            ageRange: userProfile.ageRange as SkinProfile['ageRange'],
+            budget: userProfile.budget!,
+            indianFirst: true,
+          }
+        }
+      }
     }
 
-    const profile = saved.profile
+    // Fall back to anonymous session profile
+    if (!profile) {
+      const saved = await getSkinProfile(sessionId)
+      if (!saved) {
+        return NextResponse.json(
+          { error: 'No skin profile found. Please complete the quiz first.' },
+          { status: 404 }
+        )
+      }
+      profile = saved.profile as SkinProfile
+    }
 
     const result = await analyseProduct(content, inputType, profile)
 

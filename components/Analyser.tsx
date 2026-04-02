@@ -5,6 +5,7 @@ import { ProductAnalysis } from '@/types/skin'
 
 interface AnalyserProps {
   sessionId: string
+  token?: string | null
 }
 
 type InputType = 'link' | 'text' | 'image'
@@ -24,9 +25,14 @@ export default function Analyser({ sessionId }: AnalyserProps) {
     setResult(null)
 
     try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      }
+      if (token) headers['Authorization'] = `Bearer ${token}`
+
       const response = await fetch('/api/analyse', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ sessionId, inputType, content }),
       })
 

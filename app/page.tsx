@@ -4,38 +4,127 @@ import { useState, useEffect } from 'react'
 import Quiz from '@/components/Quiz'
 import Results from '@/components/Results'
 import Analyser from '@/components/Analyser'
-import { SkinProfile, AnalysisResult } from '@/types/skin'
-import { generateSessionId } from '@/lib/supabase'
+import Login from '@/components/Login'
+import { SkinProfile, AnalysisResult, AuthUser } from '@/types/skin'
+import {
+  generateSessionId,
+  getSession,
+  onAuthStateChange,
+  signOut,
+  getUserProfile,
+  supabase,
+} from '@/lib/supabase'
 
-type AppState = 'checking' | 'welcome_back' | 'quiz' | 'loading' | 'results' | 'analyser'
+type AppState =
+  | 'checking'
+  | 'welcome_back'
+  | 'quiz'
+  | 'loading'
+  | 'results'
+  | 'analyser'
+  | 'login'
 
 export default function Home() {
   const [state, setState] = useState<AppState>('checking')
   const [result, setResult] = useState<AnalysisResult | null>(null)
   const [sessionId, setSessionId] = useState<string>('')
   const [error, setError] = useState<string>('')
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null)
+  const [token, setToken] = useState<string | null>(null)
 
   useEffect(() => {
-    const existing = localStorage.getItem('skin_session_id')
-    const existingResult = localStorage.getItem('skin_result')
+    async function init() {
+      // Check for logged in session first
+      const session = await getSession()
 
-    if (existing && existingResult) {
-      try {
-        const parsed = JSON.parse(existingResult)
-        setSessionId(existing)
-        setResult(parsed)
-        setState('welcome_back')
+      if (session?.user) {
+        const user = session.user
+        setAuthUser({
+          id: user.id,
+          email: user.email ?? null,
+          provider: (user.app_metadata?.provider as 'google' | 'email') ?? 'email',
+        })
+        setToken(session.access_token)
+        setSessionId(user.id)
+
+        // Fetch skin profile from user_profiles
+        const userProfile = await getUserProfile(user.id)
+        if (userProfile?.skinType) {
+          // Reconstruct result from localStorage if available
+          const cachedResult = localStorage.getItem(`skin_result_${user.id}`)
+          if (cachedResult) {
+            try {
+              setResult(JSON.parse(cachedResult))
+              setState('results')
+              return
+            } catch {
+              localStorage.removeItem(`skin_result_${user.id}`)
+            }
+          }
+          // Profile exists but no cached result — show welcome back
+          setState('welcome_back')
+          return
+        }
+
+        // Logged in but no profile yet — take quiz
+        setState('quiz')
         return
-      } catch {
-        localStorage.removeItem('skin_session_id')
-        localStorage.removeItem('skin_result')
       }
+
+      // Not logged in — check anonymous session
+      const existing = localStorage.getItem('skin_session_id')
+      const existingResult = localStorage.getItem('skin_result')
+
+      if (existing && existingResult) {
+        try {
+          const parsed = JSON.parse(existingResult)
+          setSessionId(existing)
+          setResult(parsed)
+          setState('welcome_back')
+          return
+        } catch {
+          localStorage.removeItem('skin_session_id')
+          localStorage.removeItem('skin_result')
+        }
+      }
+
+      const newId = generateSessionId()
+      setSessionId(newId)
+      localStorage.setItem('skin_session_id', newId)
+      setState('quiz')
     }
 
-    const newId = generateSessionId()
-    setSessionId(newId)
-    localStorage.setItem('skin_session_id', newId)
-    setState('quiz')
+    init()
+
+    // Listen for auth changes
+    const { data: { subscription } } = onAuthStateChange(async (session) => {
+      if (session?.user) {
+        setAuthUser({
+          id: session.user.id,
+          email: session.user.email ?? null,
+          provider: (session.user.app_metadata?.provider as 'google' | 'email') ?? 'email',
+        })
+        setToken(session.access_token)
+        setSessionId(session.user.id)
+
+        const userProfile = await getUserProfile(session.user.id)
+        if (userProfile?.skinType) {
+          const cachedResult = localStorage.getItem(`skin_result_${session.user.id}`)
+          if (cachedResult) {
+            try {
+              setResult(JSON.parse(cachedResult))
+              setState('results')
+              return
+            } catch {}
+          }
+          setState('welcome_back')
+        } else {
+          setState('quiz')
+        }
+      }
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   async function handleQuizComplete(profile: SkinProfile) {
@@ -43,9 +132,14 @@ export default function Home() {
     setError('')
 
     try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      }
+      if (token) headers['Authorization'] = `Bearer ${token}`
+
       const response = await fetch('/api/recommend', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ profile, sessionId }),
       })
 
@@ -55,7 +149,16 @@ export default function Home() {
         throw new Error(data.error || 'Something went wrong')
       }
 
-      localStorage.setItem('skin_result', JSON.stringify(data.result))
+      // Cache result
+      const cacheKey = authUser
+        ? `skin_result_${authUser.id}`
+        : 'skin_result'
+      localStorage.setItem(cacheKey, JSON.stringify(data.result))
+
+      if (!authUser) {
+        localStorage.setItem('skin_session_id', sessionId)
+      }
+
       setResult(data.result)
       setState('results')
 
@@ -66,10 +169,14 @@ export default function Home() {
   }
 
   function handleRetake() {
-    localStorage.removeItem('skin_result')
-    const newId = generateSessionId()
-    setSessionId(newId)
-    localStorage.setItem('skin_session_id', newId)
+    if (authUser) {
+      localStorage.removeItem(`skin_result_${authUser.id}`)
+    } else {
+      localStorage.removeItem('skin_result')
+      const newId = generateSessionId()
+      setSessionId(newId)
+      localStorage.setItem('skin_session_id', newId)
+    }
     setResult(null)
     setState('quiz')
   }
@@ -78,14 +185,24 @@ export default function Home() {
     setState('results')
   }
 
-  // Checking localStorage — blank screen for <100ms, not visible
-  if (state === 'checking') {
-    return (
-      <div style={{ minHeight: '100vh', backgroundColor: '#fafaf8' }} />
-    )
+  async function handleSignOut() {
+    await signOut()
+    localStorage.clear()
+    setAuthUser(null)
+    setToken(null)
+    setResult(null)
+    const newId = generateSessionId()
+    setSessionId(newId)
+    localStorage.setItem('skin_session_id', newId)
+    setState('quiz')
   }
 
-  // Loading spinner
+  // ── CHECKING ──
+  if (state === 'checking') {
+    return <div style={{ minHeight: '100vh', backgroundColor: '#fafaf8' }} />
+  }
+
+  // ── LOADING ──
   if (state === 'loading') {
     return (
       <div style={{
@@ -113,7 +230,17 @@ export default function Home() {
     )
   }
 
-  // Welcome back screen — returning users only
+  // ── LOGIN ──
+  if (state === 'login') {
+    return (
+      <Login
+        showSkip={!!result}
+        onSkip={() => setState(result ? 'results' : 'quiz')}
+      />
+    )
+  }
+
+  // ── WELCOME BACK ──
   if (state === 'welcome_back') {
     return (
       <div style={{
@@ -134,7 +261,7 @@ export default function Home() {
             color: '#999',
             marginBottom: '12px',
           }}>
-            Welcome back
+            {authUser ? `Signed in as ${authUser.email}` : 'Welcome back'}
           </p>
 
           <h1 style={{
@@ -151,10 +278,14 @@ export default function Home() {
             fontSize: '13px',
             color: '#999',
             lineHeight: '1.7',
-            marginBottom: '12px',
+            marginBottom: '8px',
           }}>
             Skin type:{' '}
-            <span style={{ color: '#1a1a1a', fontWeight: '600', textTransform: 'capitalize' }}>
+            <span style={{
+              color: '#1a1a1a',
+              fontWeight: '600',
+              textTransform: 'capitalize',
+            }}>
               {result?.profile.skinType}
             </span>
           </p>
@@ -171,7 +302,6 @@ export default function Home() {
             </span>
           </p>
 
-          {/* Primary — continue */}
           <button
             onClick={handleContinue}
             style={{
@@ -184,14 +314,35 @@ export default function Home() {
               fontSize: '15px',
               fontWeight: '600',
               cursor: 'pointer',
-              marginBottom: '12px',
+              marginBottom: '10px',
               fontFamily: 'inherit',
             }}
           >
             See my results →
           </button>
 
-          {/* Secondary — retake */}
+          {/* Show sign in nudge only for anonymous users */}
+          {!authUser && (
+            <button
+              onClick={() => setState('login')}
+              style={{
+                width: '100%',
+                padding: '16px',
+                borderRadius: '12px',
+                border: '1.5px solid #1a1a1a',
+                backgroundColor: 'transparent',
+                color: '#1a1a1a',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                marginBottom: '10px',
+                fontFamily: 'inherit',
+              }}
+            >
+              Save profile to account
+            </button>
+          )}
+
           <button
             onClick={handleRetake}
             style={{
@@ -215,9 +366,9 @@ export default function Home() {
     )
   }
 
+  // ── MAIN APP ──
   return (
     <>
-      {/* Error toast */}
       {error && (
         <div style={{
           position: 'fixed',
@@ -236,13 +387,52 @@ export default function Home() {
         </div>
       )}
 
-      {/* Bottom nav — only after quiz done */}
+      {/* Top bar — only when logged in */}
+      {authUser && (state === 'results' || state === 'analyser') && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '48px',
+          backgroundColor: '#ffffff',
+          borderBottom: '1px solid #e8e6e0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 20px',
+          zIndex: 100,
+        }}>
+          <p style={{
+            fontSize: '11px',
+            color: '#999',
+            letterSpacing: '1px',
+          }}>
+            {authUser.email}
+          </p>
+          <button
+            onClick={handleSignOut}
+            style={{
+              fontSize: '11px',
+              color: '#999',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+            }}
+          >
+            Sign out
+          </button>
+        </div>
+      )}
+
+      {/* Bottom nav */}
       {(state === 'results' || state === 'analyser') && (
         <div style={{
           position: 'fixed',
-          bottom: '0',
-          left: '0',
-          right: '0',
+          bottom: 0,
+          left: 0,
+          right: 0,
           backgroundColor: '#ffffff',
           borderTop: '1px solid #e8e6e0',
           display: 'flex',
@@ -291,9 +481,12 @@ export default function Home() {
         </div>
       )}
 
-      {/* Pages */}
+      {/* Content */}
       <div style={{
-        paddingBottom: state === 'results' || state === 'analyser' ? '64px' : '0',
+        paddingTop: authUser && (state === 'results' || state === 'analyser')
+          ? '48px' : '0',
+        paddingBottom: state === 'results' || state === 'analyser'
+          ? '64px' : '0',
       }}>
         {state === 'quiz' && (
           <Quiz onComplete={handleQuizComplete} />
@@ -302,7 +495,10 @@ export default function Home() {
           <Results result={result} onRetake={handleRetake} />
         )}
         {state === 'analyser' && (
-          <Analyser sessionId={sessionId} />
+          <Analyser
+            sessionId={sessionId}
+            token={token}
+          />
         )}
       </div>
     </>
