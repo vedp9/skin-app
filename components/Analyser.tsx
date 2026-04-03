@@ -11,7 +11,7 @@ interface AnalyserProps {
 type InputType = 'link' | 'text' | 'image'
 type AnalyserState = 'idle' | 'loading' | 'result' | 'error'
 
-export default function Analyser({ sessionId }: AnalyserProps) {
+export default function Analyser({ sessionId, token }: AnalyserProps) {
   const [inputType, setInputType] = useState<InputType>('link')
   const [content, setContent] = useState('')
   const [state, setState] = useState<AnalyserState>('idle')
@@ -68,15 +68,15 @@ export default function Analyser({ sessionId }: AnalyserProps) {
   }
 
   const verdictBg = {
-    yes: { bg: '#f0fdf4', border: '#bbf7d0', color: '#15803d' },
-    caution: { bg: '#fffbeb', border: '#fde68a', color: '#92400e' },
-    no: { bg: '#fff1f2', border: '#fecdd3', color: '#be123c' },
+    yes: { bg: 'var(--success-bg)', border: 'var(--success-border)', color: 'var(--success-text)' },
+    caution: { bg: 'var(--warn-bg)', border: 'var(--warn-border)', color: 'var(--warn-text)' },
+    no: { bg: 'var(--danger-bg)', border: 'var(--danger-border)', color: 'var(--danger-text)' },
   }
 
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: '#fafaf8',
+      backgroundColor: 'var(--bg)',
       padding: '40px 24px',
     }}>
       <div style={{ maxWidth: '560px', margin: '0 auto' }}>
@@ -86,7 +86,7 @@ export default function Analyser({ sessionId }: AnalyserProps) {
           fontSize: '11px',
           letterSpacing: '2px',
           textTransform: 'uppercase',
-          color: '#999',
+          color: 'var(--text-muted)',
           marginBottom: '8px',
         }}>
           Product check
@@ -94,7 +94,7 @@ export default function Analyser({ sessionId }: AnalyserProps) {
         <h1 style={{
           fontSize: '26px',
           fontWeight: '700',
-          color: '#1a1a1a',
+          color: 'var(--accent)',
           marginBottom: '8px',
           lineHeight: '1.3',
         }}>
@@ -102,7 +102,7 @@ export default function Analyser({ sessionId }: AnalyserProps) {
         </h1>
         <p style={{
           fontSize: '13px',
-          color: '#999',
+          color: 'var(--text-muted)',
           marginBottom: '36px',
           lineHeight: '1.6',
         }}>
@@ -125,10 +125,10 @@ export default function Analyser({ sessionId }: AnalyserProps) {
                 padding: '10px',
                 borderRadius: '10px',
                 border: inputType === type
-                  ? '1.5px solid #1a1a1a'
-                  : '1.5px solid #e8e6e0',
-                backgroundColor: inputType === type ? '#1a1a1a' : '#ffffff',
-                color: inputType === type ? '#ffffff' : '#999',
+                  ? '1.5px solid var(--accent)'
+                  : '1.5px solid var(--border)',
+                backgroundColor: inputType === type ? 'var(--accent)' : 'var(--surface)',
+                color: inputType === type ? 'var(--accent-text)' : 'var(--text-muted)',
                 fontSize: '12px',
                 fontWeight: '600',
                 cursor: 'pointer',
@@ -154,10 +154,10 @@ export default function Analyser({ sessionId }: AnalyserProps) {
                   width: '100%',
                   padding: '16px',
                   borderRadius: '12px',
-                  border: '1.5px solid #e8e6e0',
-                  backgroundColor: '#ffffff',
+                  border: '1.5px solid var(--border)',
+                  backgroundColor: 'var(--surface)',
                   fontSize: '14px',
-                  color: '#1a1a1a',
+                  color: 'var(--accent)',
                   outline: 'none',
                   fontFamily: 'inherit',
                 }}
@@ -174,10 +174,10 @@ export default function Analyser({ sessionId }: AnalyserProps) {
                   width: '100%',
                   padding: '16px',
                   borderRadius: '12px',
-                  border: '1.5px solid #e8e6e0',
-                  backgroundColor: '#ffffff',
+                  border: '1.5px solid var(--border)',
+                  backgroundColor: 'var(--surface)',
                   fontSize: '13px',
-                  color: '#1a1a1a',
+                  color: 'var(--accent)',
                   outline: 'none',
                   resize: 'vertical',
                   fontFamily: 'inherit',
@@ -190,7 +190,7 @@ export default function Analyser({ sessionId }: AnalyserProps) {
               <div>
                 <p style={{
                   fontSize: '12px',
-                  color: '#999',
+                  color: 'var(--text-muted)',
                   marginBottom: '10px',
                   lineHeight: '1.6',
                 }}>
@@ -204,11 +204,11 @@ export default function Analyser({ sessionId }: AnalyserProps) {
                     width: '100%',
                     padding: '32px',
                     borderRadius: '12px',
-                    border: '1.5px dashed #e8e6e0',
-                    backgroundColor: '#ffffff',
+                    border: '1.5px dashed var(--border)',
+                    backgroundColor: 'var(--surface)',
                     textAlign: 'center',
                     cursor: 'pointer',
-                    color: '#999',
+                    color: 'var(--text-muted)',
                     fontSize: '13px',
                   }}
                 >
@@ -230,11 +230,11 @@ export default function Analyser({ sessionId }: AnalyserProps) {
               borderRadius: '12px',
               border: 'none',
               backgroundColor: !content.trim() || state === 'loading'
-                ? '#e8e6e0'
-                : '#1a1a1a',
+                ? 'var(--border)'
+                : 'var(--accent)',
               color: !content.trim() || state === 'loading'
-                ? '#999'
-                : '#ffffff',
+                ? 'var(--text-muted)'
+                : 'var(--accent-text)',
               fontSize: '15px',
               fontWeight: '600',
               cursor: !content.trim() || state === 'loading'
@@ -260,12 +260,12 @@ export default function Analyser({ sessionId }: AnalyserProps) {
             <div style={{
               width: '32px',
               height: '32px',
-              border: '2.5px solid #e8e6e0',
-              borderTop: '2.5px solid #1a1a1a',
+              border: '2.5px solid var(--border)',
+              borderTop: '2.5px solid var(--accent)',
               borderRadius: '50%',
               animation: 'spin 0.8s linear infinite',
             }} />
-            <p style={{ fontSize: '13px', color: '#999' }}>
+            <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
               Checking ingredients against your skin profile...
             </p>
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
@@ -275,19 +275,19 @@ export default function Analyser({ sessionId }: AnalyserProps) {
         {/* Error */}
         {state === 'error' && (
           <div style={{
-            backgroundColor: '#fff1f2',
-            border: '1px solid #fecdd3',
+            backgroundColor: 'var(--danger-bg)',
+            border: '1px solid var(--danger-border)',
             borderRadius: '12px',
             padding: '16px 20px',
             marginBottom: '16px',
           }}>
-            <p style={{ fontSize: '13px', color: '#be123c' }}>{error}</p>
+            <p style={{ fontSize: '13px', color: 'var(--danger-text)' }}>{error}</p>
             <button
               onClick={handleReset}
               style={{
                 marginTop: '12px',
                 fontSize: '12px',
-                color: '#be123c',
+                color: 'var(--danger-text)',
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
@@ -306,15 +306,15 @@ export default function Analyser({ sessionId }: AnalyserProps) {
 
             {/* Product header */}
             <div style={{
-              backgroundColor: '#ffffff',
-              border: '1px solid #e8e6e0',
+              backgroundColor: 'var(--surface)',
+              border: '1px solid var(--border)',
               borderRadius: '14px',
               padding: '20px',
               marginBottom: '12px',
             }}>
               <p style={{
                 fontSize: '11px',
-                color: '#999',
+                color: 'var(--text-muted)',
                 textTransform: 'uppercase',
                 letterSpacing: '1px',
                 marginBottom: '4px',
@@ -324,7 +324,7 @@ export default function Analyser({ sessionId }: AnalyserProps) {
               <p style={{
                 fontSize: '16px',
                 fontWeight: '700',
-                color: '#1a1a1a',
+                color: 'var(--accent)',
                 marginBottom: '16px',
               }}>
                 {result.productName}
@@ -348,14 +348,14 @@ export default function Analyser({ sessionId }: AnalyserProps) {
                 <div>
                   <p style={{
                     fontSize: '11px',
-                    color: '#999',
+                    color: 'var(--text-muted)',
                     textTransform: 'uppercase',
                     letterSpacing: '1px',
                     marginBottom: '2px',
                   }}>
                     Skin compatibility score
                   </p>
-                  <p style={{ fontSize: '12px', color: '#666' }}>
+                  <p style={{ fontSize: '12px', color: 'var(--tag-text)' }}>
                     out of 100 for your skin profile
                   </p>
                 </div>
@@ -396,14 +396,14 @@ export default function Analyser({ sessionId }: AnalyserProps) {
                 }}>
                   <p style={{
                     fontSize: '11px',
-                    color: '#999',
+                    color: 'var(--text-muted)',
                     textTransform: 'uppercase',
                     letterSpacing: '1px',
                     marginBottom: '4px',
                   }}>
                     Better alternative
                   </p>
-                  <p style={{ fontSize: '13px', color: '#1a1a1a', lineHeight: '1.6' }}>
+                  <p style={{ fontSize: '13px', color: 'var(--accent)', lineHeight: '1.6' }}>
                     {result.alternativeSuggestion}
                   </p>
                 </div>
@@ -413,8 +413,8 @@ export default function Analyser({ sessionId }: AnalyserProps) {
             {/* Beneficial ingredients */}
             {result.beneficialIngredients.length > 0 && (
               <div style={{
-                backgroundColor: '#f0fdf4',
-                border: '1px solid #bbf7d0',
+                backgroundColor: 'var(--success-bg)',
+                border: '1px solid var(--success-border)',
                 borderRadius: '14px',
                 padding: '20px',
                 marginBottom: '12px',
@@ -424,7 +424,7 @@ export default function Analyser({ sessionId }: AnalyserProps) {
                   fontWeight: '600',
                   letterSpacing: '1.5px',
                   textTransform: 'uppercase',
-                  color: '#15803d',
+                  color: 'var(--success-text)',
                   marginBottom: '14px',
                 }}>
                   Works for your skin
@@ -433,13 +433,13 @@ export default function Analyser({ sessionId }: AnalyserProps) {
                   <div key={i} style={{
                     paddingBottom: i < result.beneficialIngredients.length - 1 ? '12px' : '0',
                     borderBottom: i < result.beneficialIngredients.length - 1
-                      ? '1px solid #bbf7d0' : 'none',
+                      ? '1px solid var(--success-border)' : 'none',
                     marginBottom: i < result.beneficialIngredients.length - 1 ? '12px' : '0',
                   }}>
                     <p style={{
                       fontSize: '13px',
                       fontWeight: '600',
-                      color: '#15803d',
+                      color: 'var(--success-text)',
                       marginBottom: '2px',
                     }}>
                       {ing.name}
@@ -455,8 +455,8 @@ export default function Analyser({ sessionId }: AnalyserProps) {
             {/* Harmful ingredients */}
             {result.harmfulIngredients.length > 0 && (
               <div style={{
-                backgroundColor: '#fff1f2',
-                border: '1px solid #fecdd3',
+                backgroundColor: 'var(--danger-bg)',
+                border: '1px solid var(--danger-border)',
                 borderRadius: '14px',
                 padding: '20px',
                 marginBottom: '12px',
@@ -466,7 +466,7 @@ export default function Analyser({ sessionId }: AnalyserProps) {
                   fontWeight: '600',
                   letterSpacing: '1.5px',
                   textTransform: 'uppercase',
-                  color: '#be123c',
+                  color: 'var(--danger-text)',
                   marginBottom: '14px',
                 }}>
                   Watch out for your skin
@@ -475,13 +475,13 @@ export default function Analyser({ sessionId }: AnalyserProps) {
                   <div key={i} style={{
                     paddingBottom: i < result.harmfulIngredients.length - 1 ? '12px' : '0',
                     borderBottom: i < result.harmfulIngredients.length - 1
-                      ? '1px solid #fecdd3' : 'none',
+                      ? '1px solid var(--danger-border)' : 'none',
                     marginBottom: i < result.harmfulIngredients.length - 1 ? '12px' : '0',
                   }}>
                     <p style={{
                       fontSize: '13px',
                       fontWeight: '600',
-                      color: '#be123c',
+                      color: 'var(--danger-text)',
                       marginBottom: '2px',
                     }}>
                       {ing.name}
@@ -497,8 +497,8 @@ export default function Analyser({ sessionId }: AnalyserProps) {
             {/* Neutral ingredients */}
             {result.neutralIngredients.length > 0 && (
               <div style={{
-                backgroundColor: '#ffffff',
-                border: '1px solid #e8e6e0',
+                backgroundColor: 'var(--surface)',
+                border: '1px solid var(--border)',
                 borderRadius: '14px',
                 padding: '20px',
                 marginBottom: '24px',
@@ -508,7 +508,7 @@ export default function Analyser({ sessionId }: AnalyserProps) {
                   fontWeight: '600',
                   letterSpacing: '1.5px',
                   textTransform: 'uppercase',
-                  color: '#999',
+                  color: 'var(--text-muted)',
                   marginBottom: '14px',
                 }}>
                   Neutral for your skin
@@ -522,9 +522,9 @@ export default function Analyser({ sessionId }: AnalyserProps) {
                     <span key={i} style={{
                       fontSize: '12px',
                       padding: '4px 12px',
-                      backgroundColor: '#f4f3f0',
+                      backgroundColor: 'var(--tag-bg)',
                       borderRadius: '100px',
-                      color: '#666',
+                      color: 'var(--tag-text)',
                     }}>
                       {ing.name}
                     </span>
@@ -540,9 +540,9 @@ export default function Analyser({ sessionId }: AnalyserProps) {
                 width: '100%',
                 padding: '16px',
                 borderRadius: '12px',
-                border: '1.5px solid #e8e6e0',
+                border: '1.5px solid var(--border)',
                 backgroundColor: 'transparent',
-                color: '#1a1a1a',
+                color: 'var(--accent)',
                 fontSize: '14px',
                 fontWeight: '600',
                 cursor: 'pointer',

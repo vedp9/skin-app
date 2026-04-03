@@ -6,6 +6,7 @@ import Results from '@/components/Results'
 import Analyser from '@/components/Analyser'
 import Login from '@/components/Login'
 import RoutineTracker from '@/components/RoutineTracker'
+import SettingsMenu from '@/components/SettingsMenu'
 import { SkinProfile, AnalysisResult, AuthUser } from '@/types/skin'
 import {
   generateSessionId,
@@ -34,6 +35,7 @@ export default function Home() {
   const [error, setError] = useState<string>('')
   const [authUser, setAuthUser] = useState<AuthUser | null>(null)
   const [token, setToken] = useState<string | null>(null)
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   useEffect(() => {
     async function init() {
@@ -390,16 +392,16 @@ export default function Home() {
         </div>
       )}
 
-      {/* Top bar — only when logged in */}
-      {authUser && (state === 'results' || state === 'analyser') && (
+      {/* Top bar */}
+      {(state === 'results' || state === 'analyser' || state === 'tracker') && (
         <div style={{
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
-          height: '48px',
-          backgroundColor: '#ffffff',
-          borderBottom: '1px solid #e8e6e0',
+          height: '52px',
+          backgroundColor: 'var(--surface)',
+          borderBottom: '1px solid var(--border)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -407,64 +409,88 @@ export default function Home() {
           zIndex: 100,
         }}>
           <p style={{
-            fontSize: '11px',
-            color: '#999',
-            letterSpacing: '1px',
+            fontSize: '13px',
+            fontWeight: '700',
+            color: 'var(--text-primary)',
+            letterSpacing: '-0.3px',
           }}>
-            {authUser.email}
+            Skin App
           </p>
           <button
-            onClick={handleSignOut}
+            onClick={() => setSettingsOpen(true)}
             style={{
-              fontSize: '11px',
-              color: '#999',
-              background: 'none',
-              border: 'none',
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              border: '1.5px solid var(--border)',
+              backgroundColor: 'var(--tag-bg)',
               cursor: 'pointer',
-              fontFamily: 'inherit',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            Sign out
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="4" r="1.5" fill="var(--text-secondary)"/>
+              <circle cx="8" cy="8" r="1.5" fill="var(--text-secondary)"/>
+              <circle cx="8" cy="12" r="1.5" fill="var(--text-secondary)"/>
+            </svg>
           </button>
         </div>
       )}
 
-      {/* Bottom nav */}
+      <SettingsMenu
+        isOpen={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        onSignOut={authUser ? handleSignOut : undefined}
+        userEmail={authUser?.email}
+      />
+
+      {/* Bottom nav — large pill buttons */}
       {(state === 'results' || state === 'analyser' || state === 'tracker') && (
         <div style={{
           position: 'fixed',
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor: '#ffffff',
-          borderTop: '1px solid #e8e6e0',
-          display: 'flex',
+          backgroundColor: 'var(--surface)',
+          borderTop: '1px solid var(--border)',
+          padding: '12px 16px 28px',
           zIndex: 100,
+          display: 'flex',
+          gap: '8px',
         }}>
           {[
-            { key: 'results', label: 'My Profile' },
-            { key: 'analyser', label: 'Check Product' },
-            { key: 'tracker', label: 'Routine' },
+            { key: 'results', label: 'My Profile', icon: '👤' },
+            { key: 'analyser', label: 'Check Product', icon: '🔍' },
+            { key: 'tracker', label: 'Routine', icon: '✓' },
           ].map(tab => (
             <button
               key={tab.key}
               onClick={() => setState(tab.key as AppState)}
               style={{
                 flex: 1,
-                padding: '16px 8px',
+                padding: '14px 8px',
+                borderRadius: '100px',
                 border: 'none',
-                backgroundColor: 'transparent',
-                fontSize: '11px',
-                fontWeight: '600',
-                color: state === tab.key ? '#1a1a1a' : '#999',
+                backgroundColor: state === tab.key
+                  ? 'var(--accent)'
+                  : 'var(--tag-bg)',
+                color: state === tab.key
+                  ? 'var(--accent-text)'
+                  : 'var(--text-muted)',
+                fontSize: '12px',
+                fontWeight: '700',
                 cursor: 'pointer',
-                borderTop: state === tab.key
-                  ? '2px solid #1a1a1a'
-                  : '2px solid transparent',
-                transition: 'all 0.15s ease',
-                fontFamily: 'inherit',
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                letterSpacing: '0.2px',
               }}
             >
+              <span style={{ fontSize: '14px' }}>{tab.icon}</span>
               {tab.label}
             </button>
           ))}
@@ -473,10 +499,10 @@ export default function Home() {
 
       {/* Content */}
       <div style={{
-        paddingTop: authUser && (state === 'results' || state === 'analyser' || state === 'tracker')
-          ? '48px' : '0',
+        paddingTop: state === 'results' || state === 'analyser' || state === 'tracker'
+          ? '52px' : '0',
         paddingBottom: state === 'results' || state === 'analyser' || state === 'tracker'
-          ? '64px' : '0',
+          ? '96px' : '0',
       }}>
         {state === 'quiz' && (
           <Quiz onComplete={handleQuizComplete} />

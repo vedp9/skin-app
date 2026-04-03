@@ -51,7 +51,7 @@ export default function Login({ onSkip, showSkip = false }: LoginProps) {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#fafaf8',
+      backgroundColor: 'var(--bg)',
       padding: '24px',
     }}>
       <div style={{ width: '100%', maxWidth: '380px' }}>
@@ -61,7 +61,7 @@ export default function Login({ onSkip, showSkip = false }: LoginProps) {
           fontSize: '11px',
           letterSpacing: '2px',
           textTransform: 'uppercase',
-          color: '#999',
+          color: 'var(--text-muted)',
           marginBottom: '12px',
         }}>
           Save your profile
@@ -69,7 +69,7 @@ export default function Login({ onSkip, showSkip = false }: LoginProps) {
         <h1 style={{
           fontSize: '26px',
           fontWeight: '700',
-          color: '#1a1a1a',
+          color: 'var(--accent)',
           lineHeight: '1.3',
           marginBottom: '8px',
         }}>
@@ -79,7 +79,7 @@ export default function Login({ onSkip, showSkip = false }: LoginProps) {
         </h1>
         <p style={{
           fontSize: '13px',
-          color: '#999',
+          color: 'var(--text-muted)',
           lineHeight: '1.7',
           marginBottom: '40px',
         }}>
@@ -99,9 +99,9 @@ export default function Login({ onSkip, showSkip = false }: LoginProps) {
                 width: '100%',
                 padding: '15px',
                 borderRadius: '12px',
-                border: '1.5px solid #e8e6e0',
-                backgroundColor: '#ffffff',
-                color: '#1a1a1a',
+                border: '1.5px solid var(--border)',
+                backgroundColor: 'var(--surface)',
+                color: 'var(--accent)',
                 fontSize: '14px',
                 fontWeight: '600',
                 cursor: loading ? 'not-allowed' : 'pointer',
@@ -130,9 +130,9 @@ export default function Login({ onSkip, showSkip = false }: LoginProps) {
               gap: '12px',
               margin: '16px 0',
             }}>
-              <div style={{ flex: 1, height: '1px', backgroundColor: '#e8e6e0' }} />
-              <span style={{ fontSize: '12px', color: '#ccc' }}>or</span>
-              <div style={{ flex: 1, height: '1px', backgroundColor: '#e8e6e0' }} />
+              <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border)' }} />
+              <span style={{ fontSize: '12px', color: 'var(--text-faint)' }}>or</span>
+              <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border)' }} />
             </div>
 
             {/* Email option */}
@@ -142,9 +142,9 @@ export default function Login({ onSkip, showSkip = false }: LoginProps) {
                 width: '100%',
                 padding: '15px',
                 borderRadius: '12px',
-                border: '1.5px solid #e8e6e0',
-                backgroundColor: '#ffffff',
-                color: '#1a1a1a',
+                border: '1.5px solid var(--border)',
+                backgroundColor: 'var(--surface)',
+                color: 'var(--accent)',
                 fontSize: '14px',
                 fontWeight: '600',
                 cursor: 'pointer',
@@ -172,10 +172,10 @@ export default function Login({ onSkip, showSkip = false }: LoginProps) {
                 width: '100%',
                 padding: '16px',
                 borderRadius: '12px',
-                border: '1.5px solid #e8e6e0',
-                backgroundColor: '#ffffff',
+                border: '1.5px solid var(--border)',
+                backgroundColor: 'var(--surface)',
                 fontSize: '14px',
-                color: '#1a1a1a',
+                color: 'var(--accent)',
                 outline: 'none',
                 marginBottom: '10px',
                 fontFamily: 'inherit',
@@ -189,8 +189,8 @@ export default function Login({ onSkip, showSkip = false }: LoginProps) {
                 padding: '15px',
                 borderRadius: '12px',
                 border: 'none',
-                backgroundColor: loading ? '#e8e6e0' : '#1a1a1a',
-                color: loading ? '#999' : '#ffffff',
+                backgroundColor: loading ? 'var(--border)' : 'var(--accent)',
+                color: loading ? 'var(--text-muted)' : 'var(--accent-text)',
                 fontSize: '14px',
                 fontWeight: '600',
                 cursor: loading ? 'not-allowed' : 'pointer',
@@ -207,7 +207,7 @@ export default function Login({ onSkip, showSkip = false }: LoginProps) {
                 background: 'none',
                 border: 'none',
                 fontSize: '13px',
-                color: '#999',
+                color: 'var(--text-muted)',
                 cursor: 'pointer',
                 padding: 0,
                 fontFamily: 'inherit',
@@ -221,13 +221,13 @@ export default function Login({ onSkip, showSkip = false }: LoginProps) {
         {/* Sent mode */}
         {mode === 'sent' && (
           <div style={{
-            backgroundColor: '#f0fdf4',
-            border: '1px solid #bbf7d0',
+            backgroundColor: 'var(--success-bg)',
+            border: '1px solid var(--success-border)',
             borderRadius: '12px',
             padding: '16px 20px',
             marginBottom: '24px',
           }}>
-            <p style={{ fontSize: '13px', color: '#15803d', lineHeight: '1.6' }}>
+            <p style={{ fontSize: '13px', color: 'var(--success-text)', lineHeight: '1.6' }}>
               Login link sent. Check your inbox and spam folder.
               The link expires in 10 minutes.
             </p>
@@ -237,13 +237,13 @@ export default function Login({ onSkip, showSkip = false }: LoginProps) {
         {/* Error */}
         {error && (
           <div style={{
-            backgroundColor: '#fff1f2',
-            border: '1px solid #fecdd3',
+            backgroundColor: 'var(--danger-bg)',
+            border: '1px solid var(--danger-border)',
             borderRadius: '10px',
             padding: '12px 16px',
             marginBottom: '16px',
           }}>
-            <p style={{ fontSize: '12px', color: '#be123c' }}>{error}</p>
+            <p style={{ fontSize: '12px', color: 'var(--danger-text)' }}>{error}</p>
           </div>
         )}
 
@@ -255,9 +255,9 @@ export default function Login({ onSkip, showSkip = false }: LoginProps) {
               width: '100%',
               padding: '15px',
               borderRadius: '12px',
-              border: '1.5px solid #e8e6e0',
+              border: '1.5px solid var(--border)',
               backgroundColor: 'transparent',
-              color: '#999',
+              color: 'var(--text-muted)',
               fontSize: '13px',
               fontWeight: '600',
               cursor: 'pointer',
@@ -272,7 +272,7 @@ export default function Login({ onSkip, showSkip = false }: LoginProps) {
         {/* Privacy note */}
         <p style={{
           fontSize: '11px',
-          color: '#ccc',
+          color: 'var(--text-faint)',
           textAlign: 'center',
           marginTop: '24px',
           lineHeight: '1.6',

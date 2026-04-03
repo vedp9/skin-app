@@ -47,8 +47,8 @@ export default function QuizHistory({ userId, onViewResult }: QuizHistoryProps) 
         <div style={{
           width: '24px',
           height: '24px',
-          border: '2px solid #e8e6e0',
-          borderTop: '2px solid #1a1a1a',
+          border: '2px solid var(--border)',
+          borderTop: '2px solid var(--accent)',
           borderRadius: '50%',
           animation: 'spin 0.8s linear infinite',
         }} />
@@ -65,7 +65,7 @@ export default function QuizHistory({ userId, onViewResult }: QuizHistoryProps) 
       }}>
         <p style={{
           fontSize: '13px',
-          color: '#999',
+          color: 'var(--text-muted)',
           lineHeight: '1.7',
         }}>
           No previous quiz results yet.
@@ -83,7 +83,7 @@ export default function QuizHistory({ userId, onViewResult }: QuizHistoryProps) 
         fontSize: '11px',
         letterSpacing: '2px',
         textTransform: 'uppercase',
-        color: '#999',
+        color: 'var(--text-muted)',
         marginBottom: '16px',
       }}>
         {history.length} {history.length === 1 ? 'result' : 'results'}
@@ -101,8 +101,8 @@ export default function QuizHistory({ userId, onViewResult }: QuizHistoryProps) 
             <div
               key={entry.id}
               style={{
-                backgroundColor: '#ffffff',
-                border: `1px solid ${isLatest ? '#1a1a1a' : '#e8e6e0'}`,
+                backgroundColor: 'var(--surface)',
+                border: `1px solid ${isLatest ? 'var(--accent)' : 'var(--border)'}`,
                 borderRadius: '14px',
                 padding: '18px 20px',
                 cursor: 'pointer',
@@ -123,8 +123,8 @@ export default function QuizHistory({ userId, onViewResult }: QuizHistoryProps) 
                       letterSpacing: '1.5px',
                       textTransform: 'uppercase',
                       fontWeight: '600',
-                      color: '#1a1a1a',
-                      backgroundColor: '#f4f3f0',
+                      color: 'var(--accent)',
+                      backgroundColor: 'var(--tag-bg)',
                       padding: '3px 8px',
                       borderRadius: '100px',
                       display: 'inline-block',
@@ -136,7 +136,7 @@ export default function QuizHistory({ userId, onViewResult }: QuizHistoryProps) 
                   <p style={{
                     fontSize: '15px',
                     fontWeight: '700',
-                    color: '#1a1a1a',
+                    color: 'var(--accent)',
                     textTransform: 'capitalize',
                     marginBottom: '2px',
                   }}>
@@ -144,7 +144,7 @@ export default function QuizHistory({ userId, onViewResult }: QuizHistoryProps) 
                   </p>
                   <p style={{
                     fontSize: '12px',
-                    color: '#999',
+                    color: 'var(--text-muted)',
                   }}>
                     {entry.profile.concerns.join(' · ')}
                   </p>
@@ -152,7 +152,7 @@ export default function QuizHistory({ userId, onViewResult }: QuizHistoryProps) 
                 <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: '12px' }}>
                   <p style={{
                     fontSize: '12px',
-                    color: '#1a1a1a',
+                    color: 'var(--accent)',
                     fontWeight: '500',
                     marginBottom: '2px',
                   }}>
@@ -160,7 +160,7 @@ export default function QuizHistory({ userId, onViewResult }: QuizHistoryProps) 
                   </p>
                   <p style={{
                     fontSize: '11px',
-                    color: '#999',
+                    color: 'var(--text-muted)',
                   }}>
                     {formatTime(entry.takenAt)}
                   </p>
@@ -177,9 +177,9 @@ export default function QuizHistory({ userId, onViewResult }: QuizHistoryProps) 
                   <span key={j} style={{
                     fontSize: '11px',
                     padding: '3px 10px',
-                    backgroundColor: '#f4f3f0',
+                    backgroundColor: 'var(--tag-bg)',
                     borderRadius: '100px',
-                    color: '#666',
+                    color: 'var(--text-secondary)',
                   }}>
                     {goal}
                   </span>
@@ -187,18 +187,18 @@ export default function QuizHistory({ userId, onViewResult }: QuizHistoryProps) 
                 <span style={{
                   fontSize: '11px',
                   padding: '3px 10px',
-                  backgroundColor: '#f4f3f0',
+                  backgroundColor: 'var(--tag-bg)',
                   borderRadius: '100px',
-                  color: '#666',
+                  color: 'var(--text-secondary)',
                 }}>
                   {entry.profile.budget} budget
                 </span>
                 <span style={{
                   fontSize: '11px',
                   padding: '3px 10px',
-                  backgroundColor: '#f4f3f0',
+                  backgroundColor: 'var(--tag-bg)',
                   borderRadius: '100px',
-                  color: '#666',
+                  color: 'var(--text-secondary)',
                 }}>
                   {entry.profile.climate}
                 </span>
@@ -206,7 +206,7 @@ export default function QuizHistory({ userId, onViewResult }: QuizHistoryProps) 
 
               <p style={{
                 fontSize: '11px',
-                color: '#ccc',
+                color: 'var(--text-faint)',
                 marginTop: '12px',
               }}>
                 Tap to view recommendations →

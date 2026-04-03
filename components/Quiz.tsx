@@ -69,7 +69,7 @@ export default function Quiz({ onComplete }: QuizProps) {
       alignItems: 'center',
       justifyContent: 'center',
       padding: '24px',
-      backgroundColor: '#fafaf8',
+      backgroundColor: 'var(--bg)',
     }}>
 
       {/* Progress bar */}
@@ -77,14 +77,14 @@ export default function Quiz({ onComplete }: QuizProps) {
         width: '100%',
         maxWidth: '480px',
         height: '3px',
-        backgroundColor: '#e8e6e0',
+        backgroundColor: 'var(--border)',
         borderRadius: '100px',
         marginBottom: '48px',
       }}>
         <div style={{
           height: '100%',
           width: `${progress}%`,
-          backgroundColor: '#1a1a1a',
+          backgroundColor: 'var(--accent)',
           borderRadius: '100px',
           transition: 'width 0.4s ease',
         }} />
@@ -100,15 +100,16 @@ export default function Quiz({ onComplete }: QuizProps) {
           fontSize: '11px',
           letterSpacing: '2px',
           textTransform: 'uppercase',
-          color: '#999',
+          color: 'var(--text-muted)',
           marginBottom: '12px',
         }}>
           {current + 1} of {questions.length}
         </p>
         <h2 style={{
-          fontSize: '24px',
-          fontWeight: '600',
-          color: '#1a1a1a',
+          fontSize: '28px',
+          fontWeight: '800',
+          color: 'var(--text-primary)',
+          letterSpacing: '-0.8px',
           lineHeight: '1.3',
           marginBottom: '8px',
         }}>
@@ -117,7 +118,7 @@ export default function Quiz({ onComplete }: QuizProps) {
         {question.subtext && (
           <p style={{
             fontSize: '13px',
-            color: '#999',
+            color: 'var(--text-muted)',
             marginBottom: '32px',
           }}>
             {question.subtext}
@@ -144,12 +145,12 @@ export default function Quiz({ onComplete }: QuizProps) {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '14px',
-                padding: '16px 20px',
-                borderRadius: '12px',
-                border: isSelected ? '1.5px solid #1a1a1a' : '1.5px solid #e8e6e0',
-                backgroundColor: isSelected ? '#1a1a1a' : '#ffffff',
-                color: isSelected ? '#ffffff' : '#1a1a1a',
-                fontSize: '14px',
+                padding: '18px 20px',
+                borderRadius: '14px',
+                border: isSelected ? '1.5px solid var(--accent)' : '1.5px solid var(--border)',
+                backgroundColor: isSelected ? 'var(--accent)' : 'var(--surface)',
+                color: isSelected ? 'var(--accent-text)' : 'var(--accent)',
+                fontSize: '15px',
                 fontWeight: '500',
                 cursor: 'pointer',
                 textAlign: 'left',
@@ -173,8 +174,8 @@ export default function Quiz({ onComplete }: QuizProps) {
             padding: '16px',
             borderRadius: '12px',
             border: 'none',
-            backgroundColor: selected.length === 0 ? '#e8e6e0' : '#1a1a1a',
-            color: selected.length === 0 ? '#999' : '#ffffff',
+            backgroundColor: selected.length === 0 ? 'var(--border)' : 'var(--accent)',
+            color: selected.length === 0 ? 'var(--text-muted)' : 'var(--accent-text)',
             fontSize: '15px',
             fontWeight: '600',
             cursor: selected.length === 0 ? 'not-allowed' : 'pointer',

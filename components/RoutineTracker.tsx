@@ -84,8 +84,8 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
         <div style={{
           width: '24px',
           height: '24px',
-          border: '2px solid #e8e6e0',
-          borderTop: '2px solid #1a1a1a',
+          border: '2px solid var(--border)',
+          borderTop: '2px solid var(--accent)',
           borderRadius: '50%',
           animation: 'spin 0.8s linear infinite',
         }} />
@@ -111,7 +111,7 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
             fontSize: '11px',
             letterSpacing: '2px',
             textTransform: 'uppercase',
-            color: '#999',
+            color: 'var(--text-muted)',
             marginBottom: '4px',
           }}>
             Today
@@ -119,7 +119,7 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
           <p style={{
             fontSize: '15px',
             fontWeight: '600',
-            color: '#1a1a1a',
+            color: 'var(--accent)',
           }}>
             {today}
           </p>
@@ -132,7 +132,7 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
             <p style={{
               fontSize: '28px',
               fontWeight: '700',
-              color: '#1a1a1a',
+              color: 'var(--accent)',
               lineHeight: 1,
               marginBottom: '2px',
             }}>
@@ -140,7 +140,7 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
             </p>
             <p style={{
               fontSize: '11px',
-              color: '#999',
+              color: 'var(--text-muted)',
               letterSpacing: '1px',
               textTransform: 'uppercase',
             }}>
@@ -153,15 +153,15 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
       {/* Completion message */}
       {bothDone && (
         <div style={{
-          backgroundColor: '#f0fdf4',
-          border: '1px solid #bbf7d0',
+          backgroundColor: 'var(--success-bg)',
+          border: '1px solid var(--success-border)',
           borderRadius: '12px',
           padding: '14px 18px',
           marginBottom: '20px',
         }}>
           <p style={{
             fontSize: '13px',
-            color: '#15803d',
+            color: 'var(--success-text)',
             fontWeight: '600',
           }}>
             Both routines done today. Keep it up.
@@ -171,8 +171,8 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
 
       {/* Morning routine */}
       <div style={{
-        backgroundColor: '#ffffff',
-        border: `1px solid ${log?.morningDone ? '#bbf7d0' : '#e8e6e0'}`,
+        backgroundColor: 'var(--surface)',
+        border: `1px solid ${log?.morningDone ? 'var(--success-border)' : 'var(--border)'}`,
         borderRadius: '14px',
         padding: '20px',
         marginBottom: '10px',
@@ -187,7 +187,7 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
           <div>
             <p style={{
               fontSize: '11px',
-              color: '#999',
+              color: 'var(--text-muted)',
               letterSpacing: '1.5px',
               textTransform: 'uppercase',
               marginBottom: '4px',
@@ -197,7 +197,7 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
             <p style={{
               fontSize: '14px',
               fontWeight: '600',
-              color: log?.morningDone ? '#15803d' : '#1a1a1a',
+              color: log?.morningDone ? 'var(--success-text)' : 'var(--accent)',
             }}>
               {log?.morningDone ? 'Completed' : `${result.morningRoutine.length} steps`}
             </p>
@@ -212,7 +212,7 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
               borderRadius: '50%',
               border: log?.morningDone
                 ? 'none'
-                : '2px solid #e8e6e0',
+                : '2px solid var(--border)',
               backgroundColor: log?.morningDone ? '#16a34a' : 'transparent',
               cursor: saving ? 'not-allowed' : 'pointer',
               display: 'flex',
@@ -226,7 +226,7 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path
                   d="M3 8l3.5 3.5L13 5"
-                  stroke="#ffffff"
+                  stroke="var(--accent-text)"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -242,7 +242,7 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
             {result.morningRoutine.map((step, i) => (
               <p key={i} style={{
                 fontSize: '12px',
-                color: '#666',
+                color: 'var(--tag-text)',
                 lineHeight: '1.7',
                 paddingLeft: '12px',
                 borderLeft: '2px solid #f0f0ee',
@@ -257,8 +257,8 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
 
       {/* Night routine */}
       <div style={{
-        backgroundColor: '#ffffff',
-        border: `1px solid ${log?.nightDone ? '#bbf7d0' : '#e8e6e0'}`,
+        backgroundColor: 'var(--surface)',
+        border: `1px solid ${log?.nightDone ? 'var(--success-border)' : 'var(--border)'}`,
         borderRadius: '14px',
         padding: '20px',
         marginBottom: '24px',
@@ -273,7 +273,7 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
           <div>
             <p style={{
               fontSize: '11px',
-              color: '#999',
+              color: 'var(--text-muted)',
               letterSpacing: '1.5px',
               textTransform: 'uppercase',
               marginBottom: '4px',
@@ -283,7 +283,7 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
             <p style={{
               fontSize: '14px',
               fontWeight: '600',
-              color: log?.nightDone ? '#15803d' : '#1a1a1a',
+              color: log?.nightDone ? 'var(--success-text)' : 'var(--accent)',
             }}>
               {log?.nightDone ? 'Completed' : `${result.nightRoutine.length} steps`}
             </p>
@@ -298,7 +298,7 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
               borderRadius: '50%',
               border: log?.nightDone
                 ? 'none'
-                : '2px solid #e8e6e0',
+                : '2px solid var(--border)',
               backgroundColor: log?.nightDone ? '#16a34a' : 'transparent',
               cursor: saving ? 'not-allowed' : 'pointer',
               display: 'flex',
@@ -312,7 +312,7 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path
                   d="M3 8l3.5 3.5L13 5"
-                  stroke="#ffffff"
+                  stroke="var(--accent-text)"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -327,7 +327,7 @@ export default function RoutineTracker({ result, userId }: RoutineTrackerProps) 
             {result.nightRoutine.map((step, i) => (
               <p key={i} style={{
                 fontSize: '12px',
-                color: '#666',
+                color: 'var(--tag-text)',
                 lineHeight: '1.7',
                 paddingLeft: '12px',
                 borderLeft: '2px solid #f0f0ee',

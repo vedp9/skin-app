@@ -102,6 +102,8 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
     .single()
 
   if (error) {
+    // PGRST116 = no rows found — not a real error, just no profile yet
+    if (error.code === 'PGRST116') return null
     console.error('Get user profile error:', error)
     return null
   }

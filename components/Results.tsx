@@ -16,7 +16,7 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: '#fafaf8',
+      backgroundColor: 'var(--bg)',
       padding: '40px 24px',
     }}>
       <div style={{ maxWidth: '560px', margin: '0 auto' }}>
@@ -26,22 +26,23 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
           fontSize: '11px',
           letterSpacing: '2px',
           textTransform: 'uppercase',
-          color: '#999',
+          color: 'var(--text-muted)',
           marginBottom: '8px',
         }}>
           Your skin profile
         </p>
         <h1 style={{
-          fontSize: '28px',
-          fontWeight: '700',
-          color: '#1a1a1a',
+          fontSize: '32px',
+          fontWeight: '800',
+          letterSpacing: '-1px',
+          color: 'var(--text-primary)',
           marginBottom: '8px',
         }}>
           {result.profile.skinType.charAt(0).toUpperCase() + result.profile.skinType.slice(1)} skin
         </h1>
         <p style={{
           fontSize: '13px',
-          color: '#999',
+          color: 'var(--text-muted)',
           marginBottom: '24px',
         }}>
           {result.profile.concerns.join(' · ')}
@@ -53,7 +54,7 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
             display: 'flex',
             gap: '0',
             marginBottom: '28px',
-            borderBottom: '1px solid #e8e6e0',
+            borderBottom: '1px solid var(--border)',
           }}>
             {[
               { key: 'current', label: 'Current results' },
@@ -68,10 +69,10 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
                   backgroundColor: 'transparent',
                   fontSize: '12px',
                   fontWeight: '600',
-                  color: tab === t.key ? '#1a1a1a' : '#999',
+                  color: tab === t.key ? 'var(--accent)' : 'var(--text-muted)',
                   cursor: 'pointer',
                   borderBottom: tab === t.key
-                    ? '2px solid #1a1a1a'
+                    ? '2px solid var(--accent)'
                     : '2px solid transparent',
                   marginBottom: '-1px',
                   fontFamily: 'inherit',
@@ -91,7 +92,7 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
           fontWeight: '600',
           letterSpacing: '1.5px',
           textTransform: 'uppercase',
-          color: '#999',
+          color: 'var(--text-muted)',
           marginBottom: '16px',
         }}>
           Recommended products
@@ -100,8 +101,8 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '40px' }}>
           {result.recommendations.map((product, i) => (
             <div key={i} style={{
-              backgroundColor: '#ffffff',
-              border: '1px solid #e8e6e0',
+              backgroundColor: 'var(--surface)',
+              border: '1px solid var(--border)',
               borderRadius: '14px',
               padding: '20px',
             }}>
@@ -114,7 +115,7 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
                 <div>
                   <p style={{
                     fontSize: '11px',
-                    color: '#999',
+                    color: 'var(--text-muted)',
                     textTransform: 'uppercase',
                     letterSpacing: '1px',
                     marginBottom: '4px',
@@ -124,7 +125,7 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
                   <p style={{
                     fontSize: '15px',
                     fontWeight: '600',
-                    color: '#1a1a1a',
+                    color: 'var(--accent)',
                   }}>
                     {product.brand} — {product.name}
                   </p>
@@ -132,7 +133,7 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
                 <span style={{
                   fontSize: '14px',
                   fontWeight: '600',
-                  color: '#1a1a1a',
+                  color: 'var(--accent)',
                   whiteSpace: 'nowrap',
                   marginLeft: '12px',
                 }}>
@@ -142,7 +143,7 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
 
               <p style={{
                 fontSize: '13px',
-                color: '#666',
+                color: 'var(--tag-text)',
                 lineHeight: '1.6',
                 marginBottom: '12px',
               }}>
@@ -159,9 +160,9 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
                   <span key={j} style={{
                     fontSize: '11px',
                     padding: '4px 10px',
-                    backgroundColor: '#f4f3f0',
+                    backgroundColor: 'var(--tag-bg)',
                     borderRadius: '100px',
-                    color: '#666',
+                    color: 'var(--text-secondary)',
                   }}>
                     {ing}
                   </span>
@@ -176,9 +177,9 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
                 style={{
                   fontSize: '12px',
                   fontWeight: '600',
-                  color: '#1a1a1a',
+                  color: 'var(--accent)',
                   textDecoration: 'none',
-                  borderBottom: '1px solid #1a1a1a',
+                  borderBottom: '1px solid var(--accent)',
                   paddingBottom: '1px',
                 }}
               >
@@ -194,13 +195,13 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
           fontWeight: '600',
           letterSpacing: '1.5px',
           textTransform: 'uppercase',
-          color: '#999',
+          color: 'var(--text-muted)',
           marginBottom: '16px',
         }}>
           Ingredients to avoid
         </h2>
         <div style={{
-          backgroundColor: '#fff8f6',
+          backgroundColor: 'var(--bg)',
           border: '1px solid #fde8e0',
           borderRadius: '14px',
           padding: '20px',
@@ -209,7 +210,7 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
           {result.ingredientsToAvoid.map((item, i) => (
             <p key={i} style={{
               fontSize: '13px',
-              color: '#666',
+              color: 'var(--tag-text)',
               lineHeight: '1.7',
               paddingBottom: i < result.ingredientsToAvoid.length - 1 ? '10px' : '0',
               borderBottom: i < result.ingredientsToAvoid.length - 1 ? '1px solid #fde8e0' : 'none',
@@ -226,13 +227,13 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
           fontWeight: '600',
           letterSpacing: '1.5px',
           textTransform: 'uppercase',
-          color: '#999',
+          color: 'var(--text-muted)',
           marginBottom: '16px',
         }}>
           Foods for your skin
         </h2>
         <div style={{
-          backgroundColor: '#f6fbf8',
+          backgroundColor: 'var(--bg)',
           border: '1px solid #e0f0e8',
           borderRadius: '14px',
           padding: '20px',
@@ -241,7 +242,7 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
           {result.foodSuggestions.map((item, i) => (
             <p key={i} style={{
               fontSize: '13px',
-              color: '#666',
+              color: 'var(--tag-text)',
               lineHeight: '1.7',
               paddingBottom: i < result.foodSuggestions.length - 1 ? '10px' : '0',
               borderBottom: i < result.foodSuggestions.length - 1 ? '1px solid #e0f0e8' : 'none',
@@ -260,8 +261,8 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
           marginBottom: '40px',
         }}>
           <div style={{
-            backgroundColor: '#ffffff',
-            border: '1px solid #e8e6e0',
+            backgroundColor: 'var(--surface)',
+            border: '1px solid var(--border)',
             borderRadius: '14px',
             padding: '20px',
           }}>
@@ -270,7 +271,7 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
               fontWeight: '600',
               letterSpacing: '1.5px',
               textTransform: 'uppercase',
-              color: '#999',
+              color: 'var(--text-muted)',
               marginBottom: '14px',
             }}>
               Morning
@@ -278,7 +279,7 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
             {result.morningRoutine.map((step, i) => (
               <p key={i} style={{
                 fontSize: '12px',
-                color: '#666',
+                color: 'var(--tag-text)',
                 lineHeight: '1.7',
                 marginBottom: '6px',
               }}>
@@ -287,8 +288,8 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
             ))}
           </div>
           <div style={{
-            backgroundColor: '#ffffff',
-            border: '1px solid #e8e6e0',
+            backgroundColor: 'var(--surface)',
+            border: '1px solid var(--border)',
             borderRadius: '14px',
             padding: '20px',
           }}>
@@ -297,7 +298,7 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
               fontWeight: '600',
               letterSpacing: '1.5px',
               textTransform: 'uppercase',
-              color: '#999',
+              color: 'var(--text-muted)',
               marginBottom: '14px',
             }}>
               Night
@@ -305,7 +306,7 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
             {result.nightRoutine.map((step, i) => (
               <p key={i} style={{
                 fontSize: '12px',
-                color: '#666',
+                color: 'var(--tag-text)',
                 lineHeight: '1.7',
                 marginBottom: '6px',
               }}>
@@ -333,9 +334,9 @@ export default function Results({ result, onRetake, userId }: ResultsProps) {
             width: '100%',
             padding: '16px',
             borderRadius: '12px',
-            border: '1.5px solid #e8e6e0',
+            border: '1.5px solid var(--border)',
             backgroundColor: 'transparent',
-            color: '#1a1a1a',
+            color: 'var(--accent)',
             fontSize: '14px',
             fontWeight: '600',
             cursor: 'pointer',
