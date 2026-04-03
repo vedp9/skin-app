@@ -5,6 +5,7 @@ import Quiz from '@/components/Quiz'
 import Results from '@/components/Results'
 import Analyser from '@/components/Analyser'
 import Login from '@/components/Login'
+import RoutineTracker from '@/components/RoutineTracker'
 import { SkinProfile, AnalysisResult, AuthUser } from '@/types/skin'
 import {
   generateSessionId,
@@ -23,6 +24,8 @@ type AppState =
   | 'results'
   | 'analyser'
   | 'login'
+  | 'tracker'
+  
 
 export default function Home() {
   const [state, setState] = useState<AppState>('checking')
@@ -427,7 +430,7 @@ export default function Home() {
       )}
 
       {/* Bottom nav */}
-      {(state === 'results' || state === 'analyser') && (
+      {(state === 'results' || state === 'analyser' || state === 'tracker') && (
         <div style={{
           position: 'fixed',
           bottom: 0,
@@ -438,54 +441,41 @@ export default function Home() {
           display: 'flex',
           zIndex: 100,
         }}>
-          <button
-            onClick={() => setState('results')}
-            style={{
-              flex: 1,
-              padding: '16px',
-              border: 'none',
-              backgroundColor: 'transparent',
-              fontSize: '12px',
-              fontWeight: '600',
-              color: state === 'results' ? '#1a1a1a' : '#999',
-              cursor: 'pointer',
-              borderTop: state === 'results'
-                ? '2px solid #1a1a1a'
-                : '2px solid transparent',
-              transition: 'all 0.15s ease',
-              fontFamily: 'inherit',
-            }}
-          >
-            My Skin Profile
-          </button>
-          <button
-            onClick={() => setState('analyser')}
-            style={{
-              flex: 1,
-              padding: '16px',
-              border: 'none',
-              backgroundColor: 'transparent',
-              fontSize: '12px',
-              fontWeight: '600',
-              color: state === 'analyser' ? '#1a1a1a' : '#999',
-              cursor: 'pointer',
-              borderTop: state === 'analyser'
-                ? '2px solid #1a1a1a'
-                : '2px solid transparent',
-              transition: 'all 0.15s ease',
-              fontFamily: 'inherit',
-            }}
-          >
-            Check a Product
-          </button>
+          {[
+            { key: 'results', label: 'My Profile' },
+            { key: 'analyser', label: 'Check Product' },
+            { key: 'tracker', label: 'Routine' },
+          ].map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setState(tab.key as AppState)}
+              style={{
+                flex: 1,
+                padding: '16px 8px',
+                border: 'none',
+                backgroundColor: 'transparent',
+                fontSize: '11px',
+                fontWeight: '600',
+                color: state === tab.key ? '#1a1a1a' : '#999',
+                cursor: 'pointer',
+                borderTop: state === tab.key
+                  ? '2px solid #1a1a1a'
+                  : '2px solid transparent',
+                transition: 'all 0.15s ease',
+                fontFamily: 'inherit',
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       )}
 
       {/* Content */}
       <div style={{
-        paddingTop: authUser && (state === 'results' || state === 'analyser')
+        paddingTop: authUser && (state === 'results' || state === 'analyser' || state === 'tracker')
           ? '48px' : '0',
-        paddingBottom: state === 'results' || state === 'analyser'
+        paddingBottom: state === 'results' || state === 'analyser' || state === 'tracker'
           ? '64px' : '0',
       }}>
         {state === 'quiz' && (
@@ -499,6 +489,50 @@ export default function Home() {
             sessionId={sessionId}
             token={token}
           />
+        )}
+        {state === 'tracker' && result && authUser && (
+          <RoutineTracker
+            result={result}
+            userId={authUser.id}
+          />
+        )}
+
+        {state === 'tracker' && !authUser && (
+          <div style={{
+            minHeight: '60vh',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '40px 24px',
+            textAlign: 'center',
+          }}>
+            <p style={{
+              fontSize: '13px',
+              color: '#999',
+              lineHeight: '1.7',
+              marginBottom: '24px',
+              maxWidth: '280px',
+            }}>
+              Sign in to track your daily routine and build a streak.
+            </p>
+            <button
+              onClick={() => setState('login')}
+              style={{
+                padding: '14px 28px',
+                borderRadius: '12px',
+                border: 'none',
+                backgroundColor: '#1a1a1a',
+                color: '#ffffff',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}
+            >
+              Sign in →
+            </button>
+          </div>
         )}
       </div>
     </>
