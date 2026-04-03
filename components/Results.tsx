@@ -1,13 +1,18 @@
 'use client'
 
 import { AnalysisResult } from '@/types/skin'
+import { useState } from 'react'
+
+import QuizHistory from '@/components/QuizHistory'
 
 interface ResultsProps {
   result: AnalysisResult
   onRetake: () => void
+  userId?: string | null
 }
 
-export default function Results({ result, onRetake }: ResultsProps) {
+export default function Results({ result, onRetake, userId }: ResultsProps) {
+  const [tab, setTab] = useState<'current' | 'history'>('current')
   return (
     <div style={{
       minHeight: '100vh',
@@ -37,11 +42,49 @@ export default function Results({ result, onRetake }: ResultsProps) {
         <p style={{
           fontSize: '13px',
           color: '#999',
-          marginBottom: '40px',
+          marginBottom: '24px',
         }}>
           {result.profile.concerns.join(' · ')}
         </p>
 
+        {/* Tab bar — only for logged in users with history */}
+        {userId && (
+          <div style={{
+            display: 'flex',
+            gap: '0',
+            marginBottom: '28px',
+            borderBottom: '1px solid #e8e6e0',
+          }}>
+            {[
+              { key: 'current', label: 'Current results' },
+              { key: 'history', label: 'Past results' },
+            ].map(t => (
+              <button
+                key={t.key}
+                onClick={() => setTab(t.key as 'current' | 'history')}
+                style={{
+                  padding: '10px 16px',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  color: tab === t.key ? '#1a1a1a' : '#999',
+                  cursor: 'pointer',
+                  borderBottom: tab === t.key
+                    ? '2px solid #1a1a1a'
+                    : '2px solid transparent',
+                  marginBottom: '-1px',
+                  fontFamily: 'inherit',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        )}
+      {(tab === 'current' || !userId) && (
+        <>
         {/* Recommendations */}
         <h2 style={{
           fontSize: '13px',
@@ -271,7 +314,18 @@ export default function Results({ result, onRetake }: ResultsProps) {
             ))}
           </div>
         </div>
-
+        </>
+      )}
+      {/* History tab */}
+      {tab === 'history' && userId && (
+        <QuizHistory
+          userId={userId}
+          onViewResult={(entry) => {
+            // Future: navigate to historical result
+            alert(`Result from ${new Date(entry.takenAt).toLocaleDateString('en-IN')} — ${entry.profile.skinType} skin`)
+          }}
+        />
+      )}
         {/* Retake */}
         <button
           onClick={onRetake}

@@ -482,7 +482,11 @@ export default function Home() {
           <Quiz onComplete={handleQuizComplete} />
         )}
         {state === 'results' && result && (
-          <Results result={result} onRetake={handleRetake} />
+          <Results
+            result={result}
+            onRetake={handleRetake}
+            userId={authUser?.id ?? null}
+          />
         )}
         {state === 'analyser' && (
           <Analyser
