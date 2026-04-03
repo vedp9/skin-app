@@ -1,515 +1,600 @@
-# Skin App — Phase 1 + Phase 2 Complete
+# Skin App — All 3 Phases Complete
 
-> A personalized skincare recommendation web app built for Indian users.
-> Free to run. Zero login required. AI-powered.
+> Personalized skincare recommendations for Indian users.
+> Free to run. AI-powered. Mobile-first. Dark mode ready.
 
 ---
 
 ## Table of Contents
 
 1. [What this app does](#what-this-app-does)
-2. [What we built — Phase 1 and Phase 2](#what-we-built--phase-1-and-phase-2)
-3. [How the app works — plain English](#how-the-app-works--plain-english)
-4. [Folder structure explained](#folder-structure-explained)
-5. [Tech stack — what, why, and cost](#tech-stack--what-why-and-cost)
+2. [Complete feature list](#complete-feature-list)
+3. [How the full app works](#how-the-full-app-works)
+4. [Folder structure](#folder-structure)
+5. [Tech stack — what, why, cost](#tech-stack--what-why-cost)
 6. [Every file explained](#every-file-explained)
-7. [The AI prompts — how they work](#the-ai-prompts--how-they-work)
-8. [Database design — why we did it this way](#database-design--why-we-did-it-this-way)
-9. [Session system — no login needed](#session-system--no-login-needed)
-10. [Returning user flow — skip or retake](#returning-user-flow--skip-or-retake)
-11. [How to run this locally](#how-to-run-this-locally)
-12. [Environment variables](#environment-variables)
-13. [Commit history](#commit-history)
-14. [What comes in Phase 3](#what-comes-in-phase-3)
+7. [All API routes](#all-api-routes)
+8. [Database design](#database-design)
+9. [Auth system](#auth-system)
+10. [Session system](#session-system)
+11. [Theme system — dark mode](#theme-system--dark-mode)
+12. [PWA — installable on Android and iOS](#pwa--installable-on-android-and-ios)
+13. [Environment variables](#environment-variables)
+14. [How to run locally](#how-to-run-locally)
+15. [How to deploy](#how-to-deploy)
+16. [Commit history](#commit-history)
 
 ---
 
 ## What this app does
 
-Most skincare advice online is generic. "Drink water. Use SPF." That helps nobody.
+Most skincare advice is generic. This app is not.
 
-This app does two things:
+It asks 6 questions about your skin — type, concerns, goals, climate, age, budget — and gives you a complete personalized plan built specifically for Indian skin and Indian brands.
 
-**1. Personalized skin analysis**
-Asks 6 targeted questions about your skin — type, concerns, goals, climate, age, and budget — and returns a complete personalized skincare plan:
-- 5 product recommendations with exact reasons why each suits your skin
-- Ingredients you must avoid and why
-- 5 foods that improve your specific skin concerns
-- A morning and night skincare routine
+**Three things the app does:**
+
+**1. Skin analysis**
+Complete AI-powered skincare plan: 5 products with exact reasons why each suits your skin, ingredients to avoid, 5 foods that improve your specific concerns, morning and night routines.
 
 **2. Product compatibility checker**
-You find a product on Instagram, Nykaa, or Amazon and want to know if it works for your skin. Paste the product link or ingredient list. The app:
-- Reads every ingredient
-- Cross-checks each one against your saved skin profile
-- Gives a compatibility score from 0 to 100
-- Lists which ingredients help, which harm, which are neutral — all with reasons specific to your skin
-- Gives an honest verdict: yes, no, or use with caution
+Found a product on Nykaa or Amazon? Paste the link or ingredient list. The app checks every ingredient against your skin profile and gives a compatibility score from 0 to 100, with a breakdown of what helps and what harms.
 
-Every recommendation is India-first. Indian brands appear before international ones. Budget is in rupees.
+**3. Routine tracker**
+Check off your morning and night routine daily. Builds a streak. Saves your history so you can see how your skin profile changes over time.
 
 ---
 
-## What we built — Phase 1 and Phase 2
+## Complete feature list
 
 ### Phase 1 — Foundation
-
-| What | Status |
-|---|---|
-| Next.js project setup | Done |
-| Folder structure | Done |
-| Skin types data schema | Done |
-| Quiz questions data (6 questions) | Done |
-| Gemini AI connector | Done |
-| Supabase database connector | Done |
-| API route — `/api/recommend` | Done |
-| Quiz UI component | Done |
-| Results UI component | Done |
-| Main page — full flow wired | Done |
-| Session handling — no login | Done |
-| Pushed to GitHub | Done |
+- 6-question skin quiz with single and multi-select
+- AI-generated product recommendations (5 products, Indian brands first)
+- Ingredients to avoid with reasons
+- Food suggestions for your skin concerns
+- Morning and night routine steps
+- Anonymous sessions — no login required
+- Results saved to browser and database
+- Returning user flow — skip or retake quiz
+- Pushed to GitHub
 
 ### Phase 2 — Product Analyser
+- Product compatibility checker
+- Input via link, ingredient text, or screenshot description
+- Compatibility score 0–100
+- Per-ingredient breakdown — beneficial, harmful, neutral
+- Verdict — yes, no, or caution — with reason
+- Alternative product suggestion when verdict is no or caution
+- Bottom navigation — My Profile and Check Product tabs
 
-| What | Status |
-|---|---|
-| Product analysis types added | Done |
-| AI analyser function in `lib/ai.ts` | Done |
-| API route — `/api/analyse` | Done |
-| Analyser UI component | Done |
-| Bottom navigation (Profile / Check a Product) | Done |
-| Returning user flow — welcome back screen | Done |
-| First time users — quiz mandatory once | Done |
-| Pushed to GitHub | Done |
+### Phase 3 — Accounts, Tracker, PWA
+- Google login (OAuth)
+- Email magic link login (no password, no SMS, free)
+- Auth callback route
+- User profiles saved to account — accessible from any device
+- Quiz history — every past result saved and viewable
+- Daily routine tracker with streak counter
+- Settings menu — slide-up panel from bottom
+- Dark mode — system default, light, or dark — user's choice
+- Bold modern UI with CSS variables throughout
+- Mobile-first design — large pill navigation, thumb-friendly buttons
+- PWA manifest and service worker
+- Installable on Android and iOS from browser
+- Offline support for cached pages
+- Deployed to Vercel on HTTPS
 
 ---
 
-## How the app works — plain English
+## How the full app works
 
-### First time user flow
-
+### First time user
 ```
-User opens the app for the first time
-        ↓
-App checks localStorage — nothing found
-        ↓
-App generates a unique session ID and saves it to localStorage
-        ↓
-User sees the quiz — mandatory, no skip option
-        ↓
-User answers 6 questions
-        ↓
-App builds a skin profile object from the answers
-        ↓
-App sends profile to Gemini AI via /api/recommend
-        ↓
-Gemini returns product recommendations as JSON
-        ↓
-App saves result to Supabase database
-        ↓
-App saves result to localStorage
-        ↓
-User sees their personalized results
-        ↓
-Bottom nav appears — "My Skin Profile" and "Check a Product"
+Opens app → app reads localStorage → nothing found
+→ New session ID generated and saved to localStorage
+→ Quiz shown — mandatory first time, no skip
+→ User answers 6 questions
+→ Skin profile built from answers
+→ POST /api/recommend with profile + sessionId
+→ Gemini AI generates recommendations
+→ Result saved to Supabase (skin_profiles table)
+→ Result saved to localStorage
+→ Results page shown
+→ Bottom nav appears — My Profile, Check Product, Routine
 ```
 
-### Returning user flow
-
+### Returning anonymous user
 ```
-User opens the app again (same device, same browser)
-        ↓
-App checks localStorage — session ID and result found
-        ↓
-Welcome back screen appears
-        ↓
-Shows their skin type and concerns as a reminder
-        ↓
-Two options:
-  → "See my results" — goes directly to results, no quiz
-  → "Retake quiz"   — clears old data, starts fresh
+Opens app → localStorage has session ID and result
+→ Welcome back screen shown
+→ Shows skin type and concerns as reminder
+→ "See my results" → results immediately, no loading
+→ "Save to account" → Login screen (optional)
+→ "Retake quiz" → new session, fresh start
+```
+
+### Logged in user
+```
+Opens app → Supabase session found
+→ getUserProfile(userId) called
+→ Profile exists → show welcome back or cached results
+→ Profile not found → send to quiz
+→ After quiz → saveUserProfile + saveQuizHistory called
+→ Results tied to account, accessible from any device
 ```
 
 ### Product analyser flow
-
 ```
-User taps "Check a Product" in bottom nav
-        ↓
-Chooses input type: Link, Ingredients, or Screenshot
-        ↓
-Pastes a product URL or ingredient list
-        ↓
-App sends content + session ID to /api/analyse
-        ↓
-API fetches saved skin profile from Supabase using session ID
-        ↓
-Sends profile + product content to Gemini AI
-        ↓
-Gemini analyses every ingredient against the skin profile
-        ↓
-Returns score, verdict, and per-ingredient breakdown
-        ↓
-User sees: score out of 100, verdict, beneficial ingredients,
-           harmful ingredients, neutral ingredients
+Tap "Check Product" in bottom nav
+→ Choose: Link, Ingredients, or Screenshot
+→ Paste content
+→ POST /api/analyse with content + sessionId + auth token
+→ API fetches skin profile (from user account if logged in, else anonymous session)
+→ Gemini analyses every ingredient against skin profile
+→ Returns score, verdict, three ingredient lists
+→ User sees result instantly
+```
+
+### Settings flow
+```
+Tap ··· button in top bar
+→ Settings panel slides up from bottom
+→ Three theme options: System default, Light, Dark
+→ Selection saved to localStorage
+→ Applied to <html data-theme> instantly
+→ Sign out option if logged in
 ```
 
 ---
 
-## Folder structure explained
+## Folder structure
 
 ```
 skin-app/
 │
-├── app/                              → All pages and API routes
-│   ├── page.tsx                      → Main page — manages all app states
-│   ├── layout.tsx                    → Wraps every page
-│   ├── globals.css                   → Global styles
+├── app/
+│   ├── page.tsx                  → Main page, all app states managed here
+│   ├── layout.tsx                → Root layout, ThemeProvider, ServiceWorker
+│   ├── globals.css               → CSS variables for light and dark mode
 │   │
 │   └── api/
 │       ├── recommend/
-│       │   └── route.ts             → Quiz → Gemini → Supabase → results
+│       │   └── route.ts         → Quiz → Gemini → Supabase → result
 │       └── analyse/
-│           └── route.ts             → Product content → Gemini → analysis
+│           └── route.ts         → Product → Gemini → ingredient analysis
+│       └── auth/
+│           └── callback/
+│               └── route.ts     → Google OAuth callback handler
 │
 ├── components/
-│   ├── Quiz.tsx                      → 6-question quiz UI
-│   ├── Results.tsx                   → Skin profile results display
-│   └── Analyser.tsx                  → Product compatibility checker UI
+│   ├── Quiz.tsx                  → 6-question quiz UI
+│   ├── Results.tsx               → Results with current/history tabs
+│   ├── Analyser.tsx              → Product compatibility checker
+│   ├── Login.tsx                 → Google + email magic link login
+│   ├── RoutineTracker.tsx        → Daily routine with streak
+│   ├── QuizHistory.tsx           → Past quiz results list
+│   ├── SettingsMenu.tsx          → Slide-up settings with theme toggle
+│   ├── ThemeProvider.tsx         → Theme context, system/light/dark
+│   └── ServiceWorker.tsx         → Registers SW in production only
 │
 ├── lib/
-│   ├── ai.ts                         → All Gemini AI calls (2 functions)
-│   ├── supabase.ts                   → All database calls (3 functions)
-│   └── questions.ts                  → Quiz questions and options
+│   ├── ai.ts                     → All Gemini calls (analyseSkin, analyseProduct)
+│   ├── supabase.ts               → All DB and auth functions
+│   └── questions.ts              → Quiz questions and options
 │
 ├── types/
-│   └── skin.ts                       → All TypeScript type definitions
+│   └── skin.ts                   → All TypeScript types
 │
-├── .env.local                        → Secret API keys (never pushed)
-├── .gitignore                        → Excludes .env.local from Git
-├── README.md                         → This file
-└── package.json                      → Dependencies and scripts
+├── public/
+│   ├── manifest.json             → PWA manifest
+│   ├── sw.js                     → Service worker
+│   └── icons/
+│       ├── icon-192.png          → App icon (Android)
+│       └── icon-512.png          → App icon (iOS splash)
+│
+├── .env.local                    → Secret keys (never pushed)
+├── .gitignore                    → Excludes .env.local
+├── README.md                     → This file
+└── package.json                  → Dependencies
 ```
 
-### Why this structure?
-
-**Why separate `lib/` from `components/`?**
-Components render things on screen. `lib/` files handle logic — talking to APIs and databases. Keeping them separate means changing your AI provider means editing one file only: `lib/ai.ts`. No component needs to change.
-
-**Why two API routes?**
-`/api/recommend` handles the quiz flow. `/api/analyse` handles the product checker. Separate routes means each has one job. Easier to debug, easier to scale independently.
-
-**Why `types/skin.ts`?**
-TypeScript catches data shape errors at build time — not after a user reports a bug. The types file is a contract between every part of the system. Change a type and TypeScript shows you everywhere it breaks immediately.
-
 ---
 
-## Tech stack — what, why, and cost
+## Tech stack — what, why, cost
 
-### Next.js — Frontend + Backend framework
-**What:** Powers the entire app — pages and API routes together.
-**Why:** Frontend and backend in one project, one deployment. No separate server needed.
-**Why not plain React?** Plain React is frontend only. You would need a separate backend to call Gemini and Supabase securely.
-**Cost:** Free forever on Vercel hobby plan.
-
----
-
-### Google Gemini API — The AI brain
-**What:** Google's AI model. Used twice — recommendations and ingredient analysis.
-**Why Gemini over ChatGPT or Claude?** Gemini 1.5 Flash has a genuine free tier — 1 million tokens per day. OpenAI and Anthropic have no free tier.
-**Why not manual logic?** An if-else recommendation system needs thousands of rules and breaks the moment a new ingredient or concern exists. AI understands context and reasons like a dermatologist.
-**Cost:** Free up to 1 million tokens per day. One quiz = ~1,500 tokens. One analysis = ~800 tokens.
-
----
-
-### Supabase — Database
-**What:** Free hosted PostgreSQL database with a visual dashboard.
-**Why:** 500MB free, 50,000 rows, visual editor, built-in auth for Phase 3, supports pgvector for semantic search.
-**Why not Firebase?** Firebase stores unstructured documents. Supabase uses SQL — structured, queryable, exportable. Also supports pgvector which Firebase does not.
-**Cost:** Free forever up to 500MB.
-
----
-
-### Tailwind CSS — Styling
-**What:** Utility CSS classes in JSX.
-**Why:** Built into Next.js setup. Fast, responsive by default.
+### Next.js on Vercel
+**What:** Full-stack React framework. Frontend pages and backend API routes in one project.
+**Why:** No separate server needed. One deployment handles everything. Free on Vercel hobby plan.
+**Why not plain React:** Plain React needs a separate backend. Next.js combines both.
 **Cost:** Free forever.
 
----
+### Google Gemini API
+**What:** AI model powering recommendations and ingredient analysis.
+**Why over ChatGPT or Claude:** Gemini 1.5 Flash is the only major AI with a genuine free tier — 1 million tokens per day, 15 requests per minute.
+**Why not manual logic:** Manual if-else rules break the moment a new ingredient or concern exists. AI reasons through context like a dermatologist.
+**Cost:** Free up to 1M tokens/day. One quiz ≈ 1,500 tokens. One analysis ≈ 800 tokens.
 
-### Cloudinary — Image storage (Phase 3)
-**What:** Cloud image storage and delivery.
-**Why not AWS S3?** S3 charges after 5GB. Cloudinary gives 25GB free per month with no credit card required to start.
-**Cost:** Free up to 25GB per month.
+### Supabase
+**What:** Hosted PostgreSQL database with auth, dashboard, and pgvector.
+**Why:** Free tier with 500MB and 50,000 rows. Built-in Google OAuth. Row Level Security. Visual table editor. Supports pgvector for future semantic search.
+**Why not Firebase:** Firebase is unstructured documents. Supabase is SQL — queryable, structured, exportable.
+**Cost:** Free up to 500MB.
+
+### Tailwind CSS
+**What:** Utility CSS classes.
+**Why:** Built into Next.js. Fast and responsive by default.
+**Cost:** Free.
+
+### Cloudinary
+**What:** Image storage and delivery.
+**Why not AWS S3:** S3 charges after 5GB. Cloudinary gives 25GB/month free, no credit card required.
+**Cost:** Free up to 25GB/month.
 
 ---
 
 ## Every file explained
 
 ### `types/skin.ts`
+Every data shape in the app. If any function returns wrong data, TypeScript catches it at build time.
 
 **Phase 1 types:**
-```
-SkinType             → oily | dry | combination | sensitive | normal
-SkinConcern          → acne | pigmentation | ageing | dullness | etc.
-SkinGoal             → clear skin | even tone | hydration | etc.
-ClimateZone          → humid | dry | tropical | cold | mixed
-SkinProfile          → all of the above in one object
-ProductRecommendation → one product with name, brand, price, whyItWorks, ingredients
-AnalysisResult       → full AI output: products + food + routines + avoid list
-```
+- `SkinType` — oily, dry, combination, sensitive, normal
+- `SkinConcern` — acne, pigmentation, ageing, dullness, darkCircles, uneven texture, pores, redness
+- `SkinGoal` — clear skin, even tone, hydration, anti ageing, brightening, oil control
+- `ClimateZone` — humid, dry, tropical, cold, mixed
+- `SkinProfile` — all of the above combined
+- `ProductRecommendation` — product with required `whyItWorks` field
+- `AnalysisResult` — full AI output
 
 **Phase 2 types:**
-```
-IngredientAnalysis   → one ingredient: name, effect, reason
-ProductAnalysis      → score, verdict, three ingredient lists, alternative suggestion
-AnalyseRequest       → sessionId + inputType + content
-```
+- `IngredientAnalysis` — one ingredient with effect and reason
+- `ProductAnalysis` — score, verdict, three ingredient lists
+- `AnalyseRequest` — sessionId + inputType + content
 
-**Why `whyItWorks` is required:**
-Every other skincare app shows you a product. This app explains exactly why it suits your specific skin. That explanation builds trust. Without it you are just another recommendation engine.
-
-**Why three ingredient lists:**
-Beneficial, harmful, neutral — every ingredient lands in exactly one list. No ingredient gets ignored. Forces the AI to give a complete picture, not just flag the obviously bad ones.
-
----
-
-### `lib/questions.ts`
-
-Six quiz questions. Each has an `id`, `type` (single or multi-select), and options with emojis.
-
-**Why 6 questions?** Every extra question reduces completion rate. Six covers age, skin type, concerns, goals, climate, budget — the minimum for meaningful recommendations.
-
-**Why the climate question?** A moisturiser that works in Delhi's dry winter causes breakouts in Hyderabad's humid summer. Climate changes what actually works. Most apps skip it. We do not.
-
-**Why budget in rupees?** ₹500 and ₹2000 are numbers Indian users understand immediately. "Low/medium/high" without context is useless.
+**Phase 3 types:**
+- `UserProfile` — account-linked skin profile
+- `QuizHistoryEntry` — one past quiz result
+- `RoutineLog` — one day's morning/night completion
+- `AuthUser` — logged in user's id, email, provider
 
 ---
 
 ### `lib/ai.ts`
+Two functions. Both talk to Gemini 1.5 Flash.
 
-Two exported functions:
+**`analyseSkin(profile)`**
+Takes a `SkinProfile`, returns `AnalysisResult`. The prompt gives Gemini a dermatologist role, injects the full profile, and enforces strict JSON output with rules: 5 products, budget enforcement, Indian brands first, `whyItWorks` required.
 
-**`analyseSkin(profile)`** → full skincare recommendations from skin profile.
-**`analyseProduct(content, inputType, profile)`** → ingredient analysis from product content + skin profile.
+**`analyseProduct(content, inputType, profile)`**
+Takes product content (link, text, or image description) and the user's skin profile. Builds a different instruction block for Gemini depending on input type. Returns `ProductAnalysis` with per-ingredient verdicts tied to the specific skin profile.
 
-**Why one file for all AI calls?** If you switch AI providers, you change one file only. No touching components or API routes.
+**Why one file:** Switch AI providers by changing one file only.
 
-**Why "Return ONLY valid JSON" in the prompt?** Gemini adds explanations before and after answers by default. That breaks `JSON.parse()`. The explicit instruction prevents this. The `cleaned` line strips accidental backticks as backup.
-
-**Why three input types in `analyseProduct`?** Link, text, image — same function handles all three by building different instruction blocks for Gemini. Same output structure regardless of input type.
+**Why "Return ONLY valid JSON":** Gemini adds explanation text by default. This breaks `JSON.parse()`. The instruction prevents it. The `cleaned` line strips accidental backticks as backup.
 
 ---
 
 ### `lib/supabase.ts`
+All database and auth operations. Grouped into four sections:
 
-Three functions:
+**Session (Phase 1+2):** `generateSessionId`, `saveSkinProfile`, `getSkinProfile`
 
-**`saveSkinProfile(sessionId, profile, result)`** — saves quiz answers and AI result as one row.
-**`getSkinProfile(sessionId)`** — fetches latest result for a session ID.
-**`generateSessionId()`** — creates a unique ID like `session_1720000000_ab3f9c2`.
+**Auth (Phase 3):** `signInWithGoogle`, `signInWithEmail`, `signOut`, `getSession`, `onAuthStateChange`
 
-**Why save profile and result together?** They are one event. Stored together you can always see what inputs produced what output. Critical for debugging and Phase 3 history.
+**User profile:** `getUserProfile`, `saveUserProfile`
 
-**Why `jsonb` column type?** The skin profile has arrays — multiple concerns, multiple goals. `jsonb` stores the whole object without extra join tables. Also queryable: `WHERE profile->>'skinType' = 'oily'`.
+**Quiz history:** `saveQuizHistory`, `getQuizHistory`
 
----
+**Routine logs:** `getTodayRoutineLog`, `upsertRoutineLog`, `getRoutineStreak`
 
-### `app/api/recommend/route.ts`
+**Why `upsert` for routine logs:** One row per user per day enforced by `unique(user_id, date)`. Upsert updates the same row when a user ticks morning, then comes back to tick night. No duplicates.
 
-Quiz → Gemini → Supabase → result.
+**Why PGRST116 handled silently in `getUserProfile`:** This is Supabase's "row not found" code. Not an error — just means the user has not taken the quiz yet. Return null, send to quiz. No console noise.
 
-Validates profile and sessionId exist. Returns 400 if missing. Wraps everything in try/catch — if Gemini or Supabase fails, returns a clean error message, not a crash.
-
-**Why validate on the server?** Frontend validation can be bypassed by anyone sending a raw HTTP request. Server validation is the real guard.
+**Why `getRoutineStreak` checks 30 days:** Streak goes backwards from today. If today has a log, streak = 1. Yesterday also, streak = 2. Stop at 30 — practical limit for the query.
 
 ---
 
-### `app/api/analyse/route.ts`
+### `lib/questions.ts`
+Six quiz questions. Each has id, type (single or multi), and options with emojis.
 
-Product content → fetch saved profile → Gemini → analysis.
+**Why 6 questions:** Minimum needed for a meaningful profile. Every extra question reduces completion rate.
 
-**Error codes:**
-- 400 — missing or invalid fields
-- 404 — no skin profile found, quiz not taken yet
-- 422 — content provided but Gemini could not identify a product
-- 500 — server error
+**Why climate question:** Delhi's dry winter needs completely different products than Hyderabad's humid summer. Most apps skip this. We do not.
 
-**Why 422 separately from 500?** 422 means the request was valid but the content was not usable. 500 means the server broke. Different problems need different error messages.
+**Why budget in rupees:** ₹500 and ₹2000 are numbers Indian users understand immediately.
 
-**Why fetch the skin profile from Supabase here?** The analyser needs the user's skin profile to judge ingredients. Fetching it by session ID means users do not retake the quiz — the app already knows who they are.
+---
+
+### `components/ThemeProvider.tsx`
+Manages the theme state globally using React Context. Three options: system, light, dark.
+
+**How it works:**
+1. On mount, reads `theme` from localStorage
+2. If nothing saved, detects system preference via `window.matchMedia`
+3. Sets `data-theme` attribute on `<html>` — either `light` or `dark`
+4. Listens for system preference changes and updates if user is on `system`
+5. Exposes `theme`, `resolvedTheme`, and `setTheme` via context
+
+**Why CSS variables on `<html>` not React state:** CSS variables apply to every element instantly — no re-renders. Toggling one attribute on `<html>` flips the entire UI. Passing theme props through every component would cause hundreds of re-renders.
+
+**Why `system` as the default:** Indian mobile users heavily use auto-brightness and system dark mode. Respecting their system setting on first open feels native.
+
+---
+
+### `components/SettingsMenu.tsx`
+Slide-up panel from the bottom of the screen. Contains theme selector and sign out.
+
+**Why slide-up from bottom:** Bottom sheets are the standard mobile pattern for settings — thumb reaches it naturally. A modal in the centre or a top drawer would require stretching the thumb.
+
+**Why three theme options not just a toggle:** A toggle only gives light/dark. System default is the most important option — users who set their phone to auto dark mode at night expect apps to follow. Three options covers all real use cases.
+
+**Why sign out is in settings not the top bar:** Sign out is a destructive, low-frequency action. Hiding it in settings prevents accidental taps. The top bar stays clean — just the app name and settings icon.
 
 ---
 
 ### `components/Quiz.tsx`
+Six-question quiz. Progress bar. Single and multi-select. Builds a typed `SkinProfile` on completion.
 
-Six-question quiz. Progress bar. Single and multi-select questions. Builds a typed `SkinProfile` on completion.
+**Bold modern UI choices:**
+- Question text: 28px, weight 800, letter-spacing -0.8px — confident, not shy
+- Option buttons: 18px padding, 14px border-radius, 15px font — easy thumb tap
+- Progress bar: 3px thin line — minimal but present
+- Active option: filled `var(--accent)` background, white text — unambiguous selection
 
-**Why a progress bar?** Users abandon multi-step forms when they do not know how long they will take. Even a 3px bar meaningfully increases completion rates.
-
-**Why `buildProfile()` inside the component?** Maps raw quiz answers to a typed `SkinProfile`. The Quiz is fully self-contained — takes nothing in except `onComplete`, gives back a clean typed profile.
+**Why `buildProfile()` inside the component:** Maps raw string answers to typed `SkinProfile`. Quiz is fully self-contained — takes only `onComplete`, returns a clean typed profile.
 
 ---
 
 ### `components/Results.tsx`
+Displays full AI output. Has a tab switcher — Current results and Past results — for logged in users.
 
-Displays full AI output. Products, ingredients to avoid, food suggestions, morning and night routines.
+**Why `whyItWorks` is prominent:** Every product card leads with the reason it suits this specific skin. That explanation builds trust. Without it, recommendations are indistinguishable from affiliate marketing.
 
-**Why show ingredients to avoid?** Telling users what NOT to buy — and why — is rare and genuinely useful. Shows the app works for the user, not for a brand.
+**Why ingredients to avoid:** Telling users what NOT to buy — and why — is rare and genuinely useful. Shows the app works for the user, not for a brand.
+
+**Why past results tab inside Results:** History and current results are the same type of content. A tab switcher keeps context — users compare without navigating away.
 
 ---
 
 ### `components/Analyser.tsx`
+Product compatibility checker. Three input tabs — Link, Ingredients, Screenshot.
 
-Product compatibility checker. Three input tabs — link, ingredients, screenshot.
+**Why score as large number:** A user glances at 82 in green and knows immediately. No reading required.
 
-**Why the score as a large number?** A user glances at 82 in green and knows immediately. No reading required. Fastest way to communicate compatibility.
+**Why three ingredient lists with different visual weight:** Beneficial (green) → harmful (red) → neutral (pills). Visual hierarchy matches what users care about most.
 
-**Why neutral ingredients as pills not rows?** Least important information deserves least visual weight. Pills take less space and draw less attention. Hierarchy — beneficial first, harmful second, neutral third — matches what users care about.
-
-**Why image tab redirects to text?** Honest about what is not built yet. A broken upload button is worse than a clear redirect. Real image upload comes in Phase 3.
-
----
-
-### `app/page.tsx`
-
-Manages five app states:
-
-```
-checking      → reading localStorage, blank screen <100ms
-welcome_back  → returning user: skip or retake
-quiz          → first time users only, mandatory
-loading       → spinner while Gemini processes
-results       → skin profile + product analyser tabs
-analyser      → product compatibility checker
-```
-
-**Why `checking` state?** Without it, the app briefly shows the quiz to returning users before localStorage loads. The blank matching-background screen for under 100ms eliminates that flash completely.
-
-**Why `welcome_back` as a separate state?** First time users must take the quiz. Returning users get a choice. These are fundamentally different flows — a dedicated state keeps the logic clean and explicit.
-
-**Why "See my results" is the primary button?** Most returning users want results, not the quiz again. Visual hierarchy — black primary, muted secondary — guides users to the right action without forcing it.
+**Why image tab redirects to text:** Honest about what is not built. A broken upload button is worse than a clear message.
 
 ---
 
-## The AI prompts — how they work
+### `components/Login.tsx`
+Three modes: options → email input → sent confirmation.
 
-### Recommendation prompt
+**Why email magic link not phone OTP:** Phone OTP requires Twilio — paid after trial. Email OTP is built into Supabase at zero cost. No password, no SMS charges.
 
-**Three parts:**
-1. Role — "Expert dermatologist with deep knowledge of Indian skincare brands"
-2. User context — full skin profile: type, concerns, goals, climate, age, budget
-3. Output rules — exact JSON structure, 5 products, budget enforcement, Indian brands first
+**Why Google login:** One tap for most users. No email or password friction. Google accounts are universal in India.
 
-**Why give the AI a role?** A general AI gives general answers. A scoped role gives specific, domain-focused answers. Highest-impact prompt technique.
-
-**Why enforce rules?** Without them the AI returns inconsistent output — 3 products sometimes, 7 others, introduction paragraphs that break JSON parsing. Rules make output predictable every time.
+**Why `showSkip` prop:** Login is optional. Anonymous users get full Phase 1 and 2 features. The skip option only appears for returning users who already have results. First time users are nudged after the quiz.
 
 ---
 
-### Analyser prompt
+### `components/RoutineTracker.tsx`
+Daily morning and night checklist with streak counter.
 
-**Three parts:**
-1. Role — "Expert cosmetic dermatologist and ingredient safety analyst"
-2. User skin profile — injected so every ingredient is judged against this specific person
-3. Input block — different instruction for link, text, or image
+**Why steps collapse when marked done:** Reduces visual noise. Collapsing gives satisfying completion feedback. The green border reinforces the save.
 
-**Why inject the full profile into every analysis?** The AI judges ingredients against this specific person's skin — not in general. A fragrance might be fine for normal skin but harmful for sensitive skin. The profile is what makes the judgement specific and useful.
+**Why streak is a large number:** Motivation metric. 36px bold makes it feel like an achievement worth protecting.
 
-**Why three verdict values only?** Yes, no, caution. No ambiguity. Users want a clear answer. The 0–100 score provides nuance for those who want it.
+**Why login-gated:** Tracking needs a stable user ID per day. Anonymous sessions are not stable enough across visits. The gate is honest — explains why and gives a direct path to sign in.
 
 ---
 
-## Database design — why we did it this way
+### `components/QuizHistory.tsx`
+List of all past quiz results for logged in users.
 
+**Why latest result has black border:** Visual hierarchy. Most recent = most relevant. Black border makes it obvious without explanation.
+
+**Why goals shown as pills on history cards:** Quick summary of what that session was about. Skin type and date alone are not enough context for a user scanning their history.
+
+---
+
+### `app/auth/callback/route.ts`
+Catches the redirect after Google OAuth. Exchanges the code for a Supabase session. Redirects to home.
+
+**Why this file must exist:** Google redirects back to `/auth/callback?code=xyz`. Without this route, the code is never exchanged and the user lands with no session. Silent failure.
+
+---
+
+### `app/api/recommend/route.ts`
+Receives skin profile → calls Gemini → saves to anonymous table → if logged in also saves to user tables → returns result.
+
+**Why save to both tables:** Anonymous `skin_profiles` supports Phase 1+2 fallback. `user_profiles` and `quiz_history` support Phase 3 accounts. Dual save means the app works for everyone regardless of login state.
+
+**Why auth token in header not body:** JWT tokens in request bodies can be logged by proxies. Authorization headers are a standard and safer pattern. The server calls `supabase.auth.getUser(token)` to verify identity server-side.
+
+---
+
+### `app/api/analyse/route.ts`
+Receives product content → tries logged in profile first → falls back to anonymous session → calls Gemini → returns analysis.
+
+**Why try logged in profile first:** Logged in users get their full account profile — more complete than a session profile. Falls back to session profile for anonymous users so the feature works for everyone.
+
+**Error codes:**
+- 400 — missing or invalid input
+- 404 — no profile found, quiz not taken
+- 422 — content not recognisable as a product
+- 500 — server error
+
+---
+
+## Database design
+
+### `skin_profiles` — anonymous sessions
 ```sql
-create table skin_profiles (
-  id          uuid      default gen_random_uuid() primary key,
-  session_id  text      not null,
-  profile     jsonb     not null,
-  result      jsonb     not null,
-  created_at  timestamp default timezone('utc', now())
-);
-
-create index idx_skin_profiles_session_id on skin_profiles(session_id);
-create index idx_skin_profiles_created_at on skin_profiles(created_at desc);
+id          uuid      primary key
+session_id  text      not null
+profile     jsonb     not null
+result      jsonb     not null
+created_at  timestamptz
 ```
+Index on `session_id` and `created_at`.
 
-**Why `jsonb` not separate columns?** Profile has nested arrays. Separate columns would need extra tables and joins. `jsonb` stores the whole object, is queryable, and is simple to change later.
+### `user_profiles` — account-linked profiles
+```sql
+id          uuid      references auth.users primary key
+email       text
+skin_type   text
+concerns    text[]
+goals       text[]
+climate     text
+age_range   text
+budget      text
+created_at  timestamptz
+updated_at  timestamptz
+```
+Row Level Security: users can only read and write their own row.
 
-**Why two indexes?**
-- `session_id` index — fast lookup on every page load and every analyse call
-- `created_at` index — fast sorting to fetch the latest result per session
+### `quiz_history` — every quiz attempt
+```sql
+id          uuid      primary key
+user_id     uuid      references auth.users
+profile     jsonb
+result      jsonb
+taken_at    timestamptz
+```
+Row Level Security: users can only read and write their own rows.
 
-Without indexes, every lookup scans the full table. At 100,000 rows the app becomes noticeably slow.
+### `routine_logs` — daily tracking
+```sql
+id            uuid      primary key
+user_id       uuid      references auth.users
+date          date
+morning_done  boolean
+night_done    boolean
+created_at    timestamptz
+unique(user_id, date)
+```
+Row Level Security on all operations. `unique(user_id, date)` prevents duplicate daily rows.
 
-**Why one table?** Profile and result are one event — one row. Separate tables would require a join on every fetch. One table, one row, one query.
+**Why Row Level Security on all Phase 3 tables:**
+Without RLS, any user with the Supabase anon key could read anyone else's data. With RLS, Supabase checks `auth.uid() = user_id` on every query at the database level — not just in code. Impossible to bypass.
+
+**Why `jsonb` for profile and result:**
+Nested arrays (concerns, goals) and flexible structures do not fit cleanly in columns. `jsonb` stores the whole object, is queryable, and is simple to evolve over time.
 
 ---
 
-## Session system — no login needed
+## Auth system
 
-```
-First visit
-→ Generate session ID: session_1720000000_ab3f9c2
-→ Save to localStorage
-→ Quiz taken, result saved to Supabase with session ID
-→ Result also saved to localStorage
+Two sign-in methods. Both are free.
 
-Return visit
-→ Read session ID from localStorage
-→ Read result from localStorage
-→ Show welcome back screen instantly — no network call needed
-→ "See my results" → results loaded from localStorage immediately
-→ "Retake quiz" → new session ID, old data cleared, quiz starts fresh
-```
+### Google OAuth
+1. User taps "Continue with Google"
+2. `signInWithGoogle()` redirects to Google
+3. Google redirects to `/auth/callback?code=xyz`
+4. Callback route calls `supabase.auth.exchangeCodeForSession(code)`
+5. Supabase creates session, user is logged in
+6. App redirects to home, `onAuthStateChange` fires, app updates state
 
-**Why both localStorage and Supabase?**
-localStorage is instant — results appear with zero loading. Supabase is the backup — if the user clears their browser or switches devices, results can be fetched using the session ID.
+### Email magic link
+1. User enters email, taps "Send login link"
+2. `signInWithEmail(email)` calls `supabase.auth.signInWithOtp`
+3. Supabase sends an email with a magic link
+4. User clicks the link in their email
+5. Redirects to `/auth/callback`, session created
+6. User is logged in — no password ever created or stored
 
-**What is the weakness?**
-If a user clears browser data, their session ID is gone. They retake the quiz. Acceptable for Phase 1 and 2. Phase 3 adds login — results tied to an account, not a browser.
-
----
-
-## Returning user flow — skip or retake
-
-**The rule:**
-- First time → quiz is mandatory, no exceptions
-- Every time after → welcome back screen with two choices
-
-**Why mandatory first time?**
-The app is useless without a skin profile. The analyser cannot work. Results cannot show. The quiz is not optional onboarding — it is the data the entire app runs on.
-
-**Why not force the quiz every time?**
-Skin type does not change every day. Forcing a returning user through 6 questions to see existing results is friction with zero benefit.
-
-**Why show skin type and concerns on the welcome back screen?**
-A quick reminder of what the app knows. If they see "oily, acne, pigmentation" and think "yes that's me" — they tap "See my results" confidently. If their skin has changed — they retake. The reminder makes the decision easy.
+**Why no phone OTP:**
+Twilio (required for SMS OTP) is paid after trial credits. Email OTP is built into Supabase at zero cost. No third-party dependency.
 
 ---
 
-## How to run this locally
+## Session system
 
-**Prerequisites:**
-- Node.js 18 or above
-- Supabase account — free at supabase.com
-- Google AI Studio account — free at aistudio.google.com
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/skin-app.git
-cd skin-app
-
-# 2. Install dependencies
-npm install
-
-# 3. Create .env.local and fill in keys (see below)
-
-# 4. Run dev server
-npm run dev
-
-# 5. Open browser
-# http://localhost:3000
+### Anonymous (Phase 1+2)
 ```
+First visit → generate session_1720000000_ab3f9c2
+→ save to localStorage
+→ quiz result saved to Supabase skin_profiles with session ID
+→ result also saved to localStorage
+
+Return visit → read session ID from localStorage
+→ read result from localStorage
+→ show welcome back screen instantly
+```
+
+### Logged in (Phase 3)
+```
+Sign in → Supabase session stored in browser automatically
+→ getUserProfile(userId) called on every load
+→ profile found → welcome back or results
+→ profile not found → quiz
+
+Results cached per user: localStorage key is skin_result_{userId}
+Different from anonymous key skin_result — no collision
+```
+
+**Why both localStorage and Supabase:**
+localStorage is instant — zero network call. Supabase is the permanent backup — works across devices and survives browser clears.
+
+---
+
+## Theme system — dark mode
+
+### How it works
+1. `ThemeProvider` wraps the entire app in `layout.tsx`
+2. On mount it reads `theme` from localStorage
+3. If nothing saved, reads system preference via `matchMedia`
+4. Sets `data-theme="light"` or `data-theme="dark"` on `<html>`
+5. All component styles use CSS variables — `var(--bg)`, `var(--text-primary)` etc.
+6. CSS variables defined in `globals.css` under `:root` (light) and `[data-theme="dark"]`
+7. Toggling `data-theme` instantly changes every color on the page
+
+### Why CSS variables not React state
+CSS variables apply to every element in one DOM operation. No re-renders. React state would require passing a theme prop to every single component — dozens of re-renders on every toggle.
+
+### Variable reference
+| Variable | Light | Dark |
+|---|---|---|
+| `--bg` | #fafaf8 | #111110 |
+| `--surface` | #ffffff | #1c1c1a |
+| `--border` | #e8e6e0 | #2e2e2b |
+| `--text-primary` | #1a1a1a | #f0ede8 |
+| `--text-secondary` | #666666 | #a8a49e |
+| `--text-muted` | #999999 | #6b6760 |
+| `--accent` | #1a1a1a | #f0ede8 |
+| `--accent-text` | #ffffff | #111110 |
+| `--tag-bg` | #f4f3f0 | #252522 |
+
+---
+
+## PWA — installable on Android and iOS
+
+### What makes this a PWA
+- `public/manifest.json` — tells browsers the app name, icons, colors, display mode
+- `public/sw.js` — service worker caches static assets for offline use
+- `components/ServiceWorker.tsx` — registers the service worker in production only
+- HTTPS on Vercel — required for service workers and PWA install prompts
+
+### Install on Android (Chrome)
+1. Open the Vercel URL in Chrome
+2. Tap the three dots menu
+3. Tap "Add to Home screen" → "Install"
+4. App icon appears on home screen
+5. Opens fullscreen — no browser UI
+
+### Install on iOS (Safari)
+1. Open the Vercel URL in Safari
+2. Tap the Share button
+3. Tap "Add to Home Screen" → "Add"
+4. App icon appears on home screen
+5. Opens fullscreen — no browser UI
+
+### Why service worker only registers in production
+Turbopack (Next.js dev server) blocks service worker registration. Registering in development causes console errors and serves no purpose. `process.env.NODE_ENV === 'production'` check activates it only on Vercel.
+
+### Why `display: standalone` in manifest
+Standalone mode removes all browser chrome — no address bar, no tabs, no back button. The app looks and feels native.
 
 ---
 
@@ -529,8 +614,56 @@ NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name_here
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Project Settings → API | Free |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | cloudinary.com → Dashboard | Free |
 
-**Why `GEMINI_API_KEY` has no `NEXT_PUBLIC_` prefix?**
-`NEXT_PUBLIC_` variables are visible in the browser — anyone can read them in the page source. The Gemini key must stay server-side only. Supabase's anon key is designed to be public — Supabase's database security rules handle access control.
+**Why `GEMINI_API_KEY` has no `NEXT_PUBLIC_` prefix:**
+`NEXT_PUBLIC_` variables are visible in the browser — anyone can read them in page source. Gemini key must stay server-side only. Supabase anon key is designed to be public — RLS handles access control at the database level.
+
+---
+
+## How to run locally
+
+```bash
+# 1. Clone
+git clone https://github.com/YOUR_USERNAME/skin-app.git
+cd skin-app
+
+# 2. Install
+npm install
+
+# 3. Create .env.local and fill in keys
+
+# 4. Run
+npm run dev
+
+# 5. Open
+# http://localhost:3000
+```
+
+---
+
+## How to deploy
+
+```bash
+# 1. Install Vercel CLI
+npm install -g vercel
+
+# 2. Deploy
+vercel
+
+# 3. Add environment variables
+vercel env add GEMINI_API_KEY
+vercel env add NEXT_PUBLIC_SUPABASE_URL
+vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY
+vercel env add NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+
+# 4. Deploy to production
+vercel --prod
+```
+
+After deployment, add your Vercel URL to:
+- Supabase → Authentication → URL Configuration → Redirect URLs
+- Google OAuth Console → Authorized redirect URIs
+
+Both should point to: `https://your-app.vercel.app/auth/callback`
 
 ---
 
@@ -542,39 +675,17 @@ phase 1 step 2 — types, questions, ai and supabase connectors
 phase 1 complete — quiz, AI recommendations, results UI
 phase 2 complete — product analyser with ingredient cross-check
 returning user flow — welcome back screen with skip or retake option
-phase 1 + 2 — updated README with full architecture explanation
+phase 3 step 1 — auth types and supabase auth connector
+phase 3 step 2 — auth callback route and login UI component
+phase 3 step 3 — auth wired into API routes and main page
+phase 3 step 4 — routine tracker with streak and daily logs
+phase 3 step 5 — quiz history with past results tab
+phase 3 step 6 — PWA, service worker, manifest, icons
+ui redesign — dark mode, pill nav, settings menu, mobile-first CSS variables
+fix — service worker production only, getUserProfile PGRST116 silent
+phase 1 + 2 + 3 — final README
 ```
 
 ---
 
-## What comes in Phase 3
-
-### Accounts and login
-- Google login and phone OTP login
-- Skin profile tied to an account not a browser
-- Results accessible from any device
-- History of past results — see how your skin changes over time
-
-### Routine tracker
-- Daily morning and night checklist
-- Push notification reminders
-- Streak tracking
-
-### Real image upload
-- Upload product photo or screenshot directly
-- Cloudinary stores the image
-- Gemini Vision reads ingredients from the image automatically
-- No manual typing needed
-
-### Mobile PWA
-- Works like a native app on Android and iOS
-- Install from browser — no app store needed
-- Offline support for saved results
-
-### Android and iOS
-- Convert PWA to native apps
-- Published on Google Play and Apple App Store
-
----
-
-Built with zero paid tools. Deployed for free. Designed for India.
+Built with zero paid tools. Deployed free. Designed for India.
