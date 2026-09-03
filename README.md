@@ -7,6 +7,7 @@ An AI-powered skincare assistant that provides personalized skincare guidance an
 ## Live Demo
 
 🔗 **Live App:** https://skin-mate-app.vercel.app 
+
 💻 **Repository:** https://github.com/vedp9/skin-app
 
 ## What It Does
